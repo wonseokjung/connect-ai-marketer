@@ -1,3 +1,4 @@
 {"id": "analyst", "name": {"en": "Analyst", "ko": "숫자 담당"},
- "duty": {"en": "Reads your own X numbers: your recent posts with views, likes and replies, your best 5, and what people said under them. Your agent tells you which topics pull conversation.", "ko": "내 X 숫자를 읽습니다. 최근 글의 조회수, 좋아요, 답글과 가장 반응 좋은 글 5개, 그 아래 사람들이 한 말까지. 어떤 주제가 대화를 만드는지는 에이전트가 정리합니다."},
- "in": "config.x.handle", "out": "out/analyst-<date>.json, .md", "humanGates": ["read only"], "loop": "every morning"}
+ "duty": {"en": "Reads your own public numbers once a day: X followers and your recent posts (views, likes, replies, best 5 and what people said under them), YouTube subscribers and your latest videos. One row per site goes into a daily CSV, and the desk shows the change since last time.", "ko": "하루 한 번 내 공개 숫자를 읽습니다. X 팔로워와 최근 글(조회수, 좋아요, 답글, 반응 좋은 글 5개와 그 아래 사람들의 말), 유튜브 구독자와 최근 영상. 사이트마다 하루 한 줄씩 CSV에 쌓고, 책상에 지난번보다 얼마나 달라졌는지 보여 줍니다."},
+ "steps": ["read X profile + recent posts", "read YouTube channel videos tab", "daily CSV row per site", "report + desk card"],
+ "in": "config.x.handle, config.youtube.handle", "out": "out/analyst-<date>.json, .md, out/analyst-daily.csv", "humanGates": ["read only: your public pages, never Studio or settings"], "loop": "every morning"}

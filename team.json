@@ -1,8 +1,8 @@
 {
-  "_about": "Your team's order of work. Each event is a list of steps; each step calls one role. Change the order, remove a step, or add your own role.",
+  "_about": "Your team's order of work. Each event is a list of steps; each step calls one role. Change the order, remove a step, or add your own role. An optional step runs only once its role is set up in config.json (a handle or a keyword).",
   "events": {
     "before-upload": [
-      {"role": "benchmarker", "action": "bench", "needs": ["kw"]}
+      {"role": "benchmarker", "action": "bench", "optional": true}
     ],
     "new-video": [
       {"role": "studio-finisher", "action": "check", "needs": ["video", "sheet"]},
@@ -11,7 +11,7 @@
     ],
     "daily": [
       {"role": "listener", "action": "listen"},
-      {"role": "analyst", "action": "read"},
+      {"role": "analyst", "action": "read", "optional": true},
       {"role": "comment-replier", "action": "scan"}
     ]
   }

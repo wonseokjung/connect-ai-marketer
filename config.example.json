@@ -1,11 +1,13 @@
 {
   "instagram": {"handle": "your_instagram_handle"},
   "x": {"handle": "your_x_handle"},
+  "youtube": {"handle": "@yourchannel"},
   "profile": {"Channel": "https://www.youtube.com/@yourchannel", "Name": "Your name or brand"},
   "replies": {"signature": "", "voice": "short, warm, like the account owner"},
   "writer": {"command": ""},
   "schedule": {"dailyAt": "09:00"},
   "listen": {"keywords": ["your product", "\"your brand\""], "screens": 3},
+  "bench": {"keywords": ["your topic"], "days": 14},
   "crossposter": {"finalClick": false},
   "autoSend": []
 }

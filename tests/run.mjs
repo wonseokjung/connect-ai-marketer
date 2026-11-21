@@ -15,10 +15,12 @@ import {queueOrSend} from '../roles/comment-replier/run.mjs';
 import {plan, ROLES} from '../lib/team.mjs';
 import {writerPrompt, parseReplies} from '../lib/watch.mjs';
 import {views, ageDays, patterns, rows as benchRows, summary as benchSummary, report as benchReport, ready as benchReady} from '../roles/benchmarker/run.mjs';
-import {numbers} from '../roles/analyst/run.mjs';
+import {numbers, ytHeader, ytItem, upsertCsv, parseCsv, latest, ready as analystReady} from '../roles/analyst/run.mjs';
 import {count, seconds, clock, unset} from '../lib/num.mjs';
 import {checks, render} from '../lib/doctor.mjs';
 import {egoCommand} from '../lib/ego.mjs';
+import {desk} from '../lib/desk.mjs';
+import {runEvent} from '../lib/team.mjs';
 
 let n = 0;
 const t = async (name, fn) => { await fn(); n++; console.log('  ok ' + name); };
@@ -97,6 +99,34 @@ await t('benchmarker keeps recent unique videos, adds length and views a day', (
   assert.ok(md.includes('| Length |') && md.includes('25:00') && md.includes('C / pipe'));
   assert.ok(benchReport('x', 14, [], []).includes('No videos'));
   assert.equal(benchReady({}, {}) === true, false); assert.equal(benchReady({}, {kw: 'k'}), true); assert.equal(benchReady({bench: {keywords: ['your topic']}}), 'needs --kw "<keyword>" or bench.keywords in config.json');
+});
+await t('analyst reads a YouTube channel page (English and Korean)', () => {
+  assert.deepEqual(ytHeader('Google for Developers\n@GoogleDevelopers\n•\n2.69M subscribers\n•\n6.1K videos\nWelcome'), {subscribers: 2690000, videos: 6100, subscribersText: '2.69M subscribers', videosText: '6.1K videos'});
+  assert.equal(ytHeader('채널\n구독자 1.2만명 • 동영상 340개').subscribers, 12000);
+  const v = ytItem({title: 'Gemini 4: 3D world', url: 'u', lines: ['1:08', 'Gemini 4: 3D world', 'Google for Developers', '21K', '16h ago']});
+  assert.deepEqual([v.views, v.days, v.lengthText], [21000, 0, '1:08']);
+  const k = ytItem({title: 't', url: 'u', lines: ['12:01', 't', '조회수 3.4천회', '3일 전']});
+  assert.deepEqual([k.views, k.days], [3400, 3]);
+});
+await t('analyst daily CSV: one row per day and site, desk shows the change', () => {
+  const f = path.join(h, 'out', 'analyst-daily.csv');
+  upsertCsv(f, {date: '2026-11-20', site: 'x', handle: '@me', followers: 100, posts_read: 10, views: 1000, likes: 5, replies: 1, best_url: 'https://x.com/me/status/1'});
+  upsertCsv(f, {date: '2026-11-21', site: 'x', handle: '@me', followers: 90, posts_read: 10, views: 1500, likes: 5, replies: 1, best_url: 'a,"b"'});
+  upsertCsv(f, {date: '2026-11-21', site: 'x', handle: '@me', followers: 112, posts_read: 10, views: 1700, likes: 5, replies: 1, best_url: 'a,"b"'});
+  upsertCsv(f, {date: '2026-11-21', site: 'youtube', handle: '@me', followers: 5000, posts_read: 30, views: 90000});
+  const all = parseCsv(fs.readFileSync(f, 'utf8'));
+  assert.equal(all.length, 3); assert.equal(all.find((r) => r.date === '2026-11-21' && r.site === 'x').best_url, 'a,"b"');
+  const L = latest(all); const x = L.find((r) => r.site === 'x');
+  assert.deepEqual([x.followers, x.change.followers, x.change.views, x.since], ['112', 12, 700, '2026-11-20']);
+  assert.equal(L.find((r) => r.site === 'youtube').change.followers, null);
+  const html = fs.readFileSync(desk(h), 'utf8');
+  assert.ok(html.includes('Your numbers') && html.includes('112 followers') && html.includes('(+12)') && html.includes('5,000 subscribers'));
+  assert.equal(analystReady({x: {handle: 'your_x_handle'}}) === true, false); assert.equal(analystReady({profile: {Channel: 'https://www.youtube.com/@real'}}), true);
+});
+await t('team: an optional step that is not set up is skipped, never run', async () => {
+  const lines = [];
+  const r = await runEvent(h, {x: {handle: 'your_x_handle'}}, 'before-upload', {}, (l) => lines.push(l));
+  assert.ok(r.results[0].skipped); assert.ok(lines[0].includes('skipped, optional'));
 });
 const fake = (o = {}) => ({egoVersion: () => 'ego-browser 0.6', egoAlive: () => '', psPolicy: () => 'RemoteSigned', ...o});
 await t('doctor: old Node, PowerShell policy, Ego Lite not on PATH yet, each with an English and Korean fix', () => {
