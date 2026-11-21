@@ -7,9 +7,27 @@ CONNECT AI LAB 공개 코드 · MIT + Commons Clause (무료로 쓰되 판매 �
 npx github:wonseokjung/connect-ai-marketer setup
 ```
 
+## 처음이면 이 순서대로
+
+1. **에고라이트 설치**: [lite.ego.app](https://lite.ego.app)에서 내 컴퓨터(맥 또는 윈도우)용을 받아 열고, 첫 안내를 끝까지 마칩니다.
+   - 맥에서 열리지 않으면: 시스템 설정 > 개인정보 보호 및 보안 > 그래도 열기
+   - 윈도우: 설치 파일을 실행하고, 첫 안내가 끝나면 PowerShell을 새로 엽니다.
+2. **Node.js 설치**: [nodejs.org](https://nodejs.org)에서 LTS를 받아 설치합니다. 터미널(윈도우는 PowerShell)을 새로 열고 `node -v`가 v18 이상이면 됩니다.
+3. **바이브코딩 도구 하나**: Claude Code, ChatGPT Codex, Antigravity(Gemini) 중 쓰는 것 하나면 됩니다. 글은 이 도구가 씁니다.
+4. **설치 한 줄**: 터미널에서 아래를 실행합니다. 바이브코딩 도구에게 실행해 달라고 해도 됩니다.
+   ```bash
+   npx github:wonseokjung/connect-ai-marketer setup
+   ```
+5. **에고라이트에서 로그인**: 팀이 일할 사이트(인스타그램, X, 스레드, 유튜브 스튜디오)에 에고라이트 안에서 로그인해 둡니다. 비밀번호와 2단계 인증은 직접 합니다.
+6. **점검하고 근무 시작**:
+   ```bash
+   npx github:wonseokjung/connect-ai-marketer doctor
+   npx github:wonseokjung/connect-ai-marketer watch
+   ```
+
 ![connect-ai-marketer](docs/hero.webp)
 
-AI 팀원 8명이 일합니다. 팀원은 하나씩 만들고 근무표(`team.json`)로 엮습니다. 댓글은 10분마다, 리스닝은 매일 아침, 업로드 마무리와 게시는 영상이 올라갈 때마다. `npx connect-ai-marketer watch` 하면 팀이 24시간 근무를 시작합니다. 글은 여러분의 에이전트(Claude Code, Codex, Antigravity)가 쓰고, 킷은 에고라이트 안에서 찾고, 확인하고, 결재함에 넣고, 입력합니다. 내 탭은 건드리지 않습니다.
+AI 팀원 8명이 일합니다. 팀원은 하나씩 만들고 근무표(`team.json`)로 엮습니다. 댓글은 10분마다, 리스닝은 매일 아침, 업로드 마무리와 게시는 영상이 올라갈 때마다. `npx github:wonseokjung/connect-ai-marketer watch` 하면 팀이 24시간 근무를 시작합니다. 글은 여러분의 에이전트(Claude Code, Codex, Antigravity)가 쓰고, 킷은 에고라이트 안에서 찾고, 확인하고, 결재함에 넣고, 입력합니다. 내 탭은 건드리지 않습니다.
 
 | 팀원 | 하는 일 | 상태 |
 |---|---|---|

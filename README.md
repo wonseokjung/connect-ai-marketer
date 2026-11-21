@@ -7,9 +7,27 @@ Source available by CONNECT AI LAB · MIT + Commons Clause (free to use, not for
 npx github:wonseokjung/connect-ai-marketer setup
 ```
 
+## First time? In this order
+
+1. **Install Ego Lite**: download it for your computer (macOS or Windows) at [lite.ego.app](https://lite.ego.app), open it and finish the first-run steps.
+   - macOS will not open it: System Settings > Privacy & Security > Open Anyway
+   - Windows: run the installer, finish the first-run steps, then open a new PowerShell.
+2. **Install Node.js**: get the LTS from [nodejs.org](https://nodejs.org). Open a new terminal (PowerShell on Windows); `node -v` should be v18 or newer.
+3. **One vibe-coding tool**: Claude Code, ChatGPT Codex or Antigravity (Gemini). It writes the words.
+4. **One install line** in the terminal (or ask your vibe-coding tool to run it):
+   ```bash
+   npx github:wonseokjung/connect-ai-marketer setup
+   ```
+5. **Sign in inside Ego Lite** to the sites the team works on (Instagram, X, Threads, YouTube Studio). Passwords and 2-step codes are yours to type.
+6. **Check, then go on duty**:
+   ```bash
+   npx github:wonseokjung/connect-ai-marketer doctor
+   npx github:wonseokjung/connect-ai-marketer watch
+   ```
+
 [![connect-ai-marketer](docs/hero.webp)](docs/index.html)
 
-Eight AI teammates, built one by one and wired by a work schedule (`team.json`): comments every 10 minutes, listening every morning, finishing and posting every upload. `npx connect-ai-marketer watch` puts the team on duty around the clock. Your agent (Claude Code, Codex, Antigravity) writes the words; the kit scans, checks, queues and types in Ego Lite, so your own tabs stay yours.
+Eight AI teammates, built one by one and wired by a work schedule (`team.json`): comments every 10 minutes, listening every morning, finishing and posting every upload. `npx github:wonseokjung/connect-ai-marketer watch` puts the team on duty around the clock. Your agent (Claude Code, Codex, Antigravity) writes the words; the kit scans, checks, queues and types in Ego Lite, so your own tabs stay yours.
 
 | Teammate | What it does | Status |
 |---|---|---|
