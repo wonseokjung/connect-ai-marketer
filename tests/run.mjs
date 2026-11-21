@@ -78,7 +78,7 @@ await t('analyst parses X numbers', () => {
   assert.deepEqual([p.views, p.likes, p.replies, p.reposts], [2048, 31, 4, 2]);
 });
 await t('numbers as sites print them', () => {
-  assert.deepEqual(['24K', '5.7M', '2.69M subscribers', '6.1K videos', '696.3K Followers', '구독자 2.69만명', '조회수 3.4만회', '1,234 views', 'No views'].map(count), [24000, 5700000, 2690000, 6100, 696300, 26900, 34000, 1234, 0]);
+  assert.deepEqual(['24K', '5.7M', '2.69M subscribers', '6.1K videos', '696.3K Followers', '구독자 2.69만명', '조회수 3.4만회', '1,234 views', 'No views', '1.2 million views'].map(count), [24000, 5700000, 2690000, 6100, 696300, 26900, 34000, 1234, 0, 1200000]);
   assert.deepEqual(['16h ago', '1d ago', '1mo ago', '1y ago', '3일 전', '15 minutes ago'].map(ageDays), [0, 1, 30, 365, 3, 0]);
   assert.deepEqual(['11:11', '1:02:03', 'SHORTS', ''].map(seconds), [671, 3723, 0, 0]);
   assert.equal(clock(3723), '1:02:03'); assert.equal(clock(671), '11:11');
@@ -119,6 +119,7 @@ await t('analyst daily CSV: one row per day and site, desk shows the change', ()
   const L = latest(all); const x = L.find((r) => r.site === 'x');
   assert.deepEqual([x.followers, x.change.followers, x.change.views, x.since], ['112', 12, 700, '2026-11-20']);
   assert.equal(L.find((r) => r.site === 'youtube').change.followers, null);
+  assert.deepEqual(parseCsv('site,date,followers\nx,2026-01-01,5\n').map((r) => [r.date, r.site, r.followers]), [['2026-01-01', 'x', '5']]);
   const html = fs.readFileSync(desk(h), 'utf8');
   assert.ok(html.includes('Your numbers') && html.includes('112 followers') && html.includes('(+12)') && html.includes('5,000 subscribers'));
   assert.equal(analystReady({x: {handle: 'your_x_handle'}}) === true, false); assert.equal(analystReady({profile: {Channel: 'https://www.youtube.com/@real'}}), true);

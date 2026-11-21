@@ -67,10 +67,13 @@ export function ytItem(it) {
 
 // ---- daily CSV: one row per date and site, a second run the same day replaces that day's row ----
 export const CSV_COLS = ['date', 'site', 'handle', 'followers', 'posts_read', 'views', 'likes', 'replies', 'best_url'];
-const q = (v) => { const s = String(v ?? ''); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+const q = (v) => { const s = String(v ?? '').replace(/[\r\n]+/g, ' '); return /[",]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }; // one line per row, always
 export function parseCsv(text) {
   const out = [];
-  for (const line of String(text || '').split(/\r?\n/).slice(1)) {
+  const lines = String(text || '').split(/\r?\n/);
+  let cols = CSV_COLS;
+  for (const line of lines.slice(0, 1)) if (line.includes('date')) cols = line.split(',').map((x) => x.trim()); // columns by the file's own header
+  for (const line of lines.slice(1)) {
     if (!line.trim()) continue;
     const cells = []; let cur = '', inq = false;
     for (let i = 0; i < line.length; i++) {
@@ -79,7 +82,8 @@ export function parseCsv(text) {
       else if (c === '"') inq = true; else if (c === ',') { cells.push(cur); cur = ''; } else cur += c;
     }
     cells.push(cur);
-    out.push(Object.fromEntries(CSV_COLS.map((k, i) => [k, cells[i] ?? ''])));
+    const rec = Object.fromEntries(cols.map((k, i) => [k, cells[i] ?? '']));
+    out.push(Object.fromEntries(CSV_COLS.map((k) => [k, rec[k] ?? ''])));
   }
   return out;
 }
