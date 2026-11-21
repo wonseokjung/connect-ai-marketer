@@ -1,3 +1,4 @@
 {"id": "benchmarker", "name": {"en": "Benchmarker", "ko": "벤치마크 담당"},
- "duty": {"en": "Before you publish: searches YouTube for your keyword, keeps videos from the last 2 weeks, ranks them by views, and makes one table with title, channel, views, upload date and thumbnail link, plus simple title patterns.", "ko": "올리기 전에: 키워드로 유튜브를 검색해 최근 2주 영상만 남기고 조회수 순으로 정리합니다. 제목, 채널, 조회수, 업로드 날짜, 썸네일 링크를 표 하나로 만들고 제목 패턴도 셉니다."},
- "in": "--kw", "out": "out/bench-<keyword>-<date>.json, .md", "humanGates": ["read only"], "loop": "before every upload"}
+ "duty": {"en": "Before you publish: searches YouTube for your keyword, keeps videos from the last 2 weeks, ranks them by views, and writes one table with title, channel, views, upload age, length and views a day, plus the median length and simple title patterns.", "ko": "올리기 전에: 키워드로 유튜브를 검색해 최근 2주 영상만 남기고 조회수 순으로 정리합니다. 제목, 채널, 조회수, 올린 지 며칠, 길이, 하루 조회수를 표 하나로 만들고 길이 중앙값과 제목 패턴도 셉니다."},
+ "steps": ["search YouTube", "keep the last N days", "rank by views", "report"],
+ "in": "--kw (or config.bench.keywords), --days", "out": "out/bench-<keyword>-<date>.json, .md", "humanGates": ["read only: never likes, subscribes or comments"], "loop": "before every upload"}

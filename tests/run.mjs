@@ -14,7 +14,7 @@ import {draft} from '../roles/crossposter/run.mjs';
 import {queueOrSend} from '../roles/comment-replier/run.mjs';
 import {plan, ROLES} from '../lib/team.mjs';
 import {writerPrompt, parseReplies} from '../lib/watch.mjs';
-import {views, ageDays, patterns} from '../roles/benchmarker/run.mjs';
+import {views, ageDays, patterns, rows as benchRows, summary as benchSummary, report as benchReport, ready as benchReady} from '../roles/benchmarker/run.mjs';
 import {numbers} from '../roles/analyst/run.mjs';
 import {count, seconds, clock, unset} from '../lib/num.mjs';
 import {checks, render} from '../lib/doctor.mjs';
@@ -81,6 +81,22 @@ await t('numbers as sites print them', () => {
   assert.deepEqual(['11:11', '1:02:03', 'SHORTS', ''].map(seconds), [671, 3723, 0, 0]);
   assert.equal(clock(3723), '1:02:03'); assert.equal(clock(671), '11:11');
   assert.ok(unset('your_x_handle') && unset('@yourchannel') && unset('') && !unset('realname'));
+});
+await t('benchmarker keeps recent unique videos, adds length and views a day', () => {
+  const raw = [
+    {url: 'https://y/watch?v=1', title: 'A', viewsText: '24K', ageText: '2d ago', lengthText: '11:11'},
+    {url: 'https://y/watch?v=1', title: 'A dup', viewsText: '24K', ageText: '2d ago', lengthText: '11:11'},
+    {url: 'https://y/watch?v=2', title: 'B', viewsText: '5.7M', ageText: '1y ago', lengthText: '10:09'},
+    {url: 'https://y/watch?v=3', title: 'C | pipe', viewsText: '300K', ageText: '1w ago', lengthText: '25:00'},
+  ];
+  const r = benchRows(raw, {days: 14});
+  assert.deepEqual(r.map((x) => x.url.slice(-1)), ['3', '1']);
+  assert.equal(r[0].sec, 1500); assert.equal(r[0].perDay, Math.round(300000 / 7)); assert.equal(r[1].perDay, 12000);
+  const s = benchSummary(r); assert.equal(s.over20min, 1); assert.equal(s.between5and20, 1);
+  const md = benchReport('ai agent', 14, r, patterns(r.map((x) => x.title)), s);
+  assert.ok(md.includes('| Length |') && md.includes('25:00') && md.includes('C / pipe'));
+  assert.ok(benchReport('x', 14, [], []).includes('No videos'));
+  assert.equal(benchReady({}, {}) === true, false); assert.equal(benchReady({}, {kw: 'k'}), true); assert.equal(benchReady({bench: {keywords: ['your topic']}}), 'needs --kw "<keyword>" or bench.keywords in config.json');
 });
 const fake = (o = {}) => ({egoVersion: () => 'ego-browser 0.6', egoAlive: () => '', psPolicy: () => 'RemoteSigned', ...o});
 await t('doctor: old Node, PowerShell policy, Ego Lite not on PATH yet, each with an English and Korean fix', () => {
