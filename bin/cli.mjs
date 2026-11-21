@@ -3,18 +3,19 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawn} from 'node:child_process';
-import {KIT, NAME, home, config, readJson, writeJson} from '../lib/paths.mjs';
+import {KIT, NAME, RUN, home, config} from '../lib/paths.mjs';
 import {egoInstalled} from '../lib/ego.mjs';
 import {xLength, X_LIMIT} from '../lib/xcount.mjs';
 import * as inbox from '../lib/inbox.mjs';
-import {ROLES, roleInfo, runEvent, plan} from '../lib/team.mjs';
+import {ROLES, roleInfo, runEvent} from '../lib/team.mjs';
 import {desk} from '../lib/desk.mjs';
 import {installSkill, removeSkill} from '../lib/install.mjs';
+import {checks, render} from '../lib/doctor.mjs';
 import {watch, once} from '../lib/watch.mjs';
 import {banner, gold, dimmed, tint} from '../lib/banner.mjs';
 
 const argv = process.argv.slice(2);
-const VALUED = ['home', 'agent', 'dir', 'video', 'sheet', 'post', 'file', 'kw', 'id', 'every', 'url', 'handle'];
+const VALUED = ['home', 'agent', 'dir', 'video', 'sheet', 'post', 'file', 'kw', 'id', 'every', 'url', 'handle', 'site', 'days'];
 const opt = (n, d = null) => { const i = argv.indexOf('--' + n); return i >= 0 && argv[i + 1] && !argv[i + 1].startsWith('--') ? argv[i + 1] : d; };
 const flag = (n) => argv.includes('--' + n);
 const pos = argv.filter((a, i) => !a.startsWith('--') && !(i > 0 && VALUED.includes(argv[i - 1].slice(2))));
@@ -22,7 +23,6 @@ const cmd = pos[0] || 'help';
 const log = (...a) => console.log(...a);
 const args = Object.fromEntries(VALUED.map((k) => [k, opt(k)]).filter(([, v]) => v));
 const H = () => home(opt('home'));
-const RUN = 'npx github:wonseokjung/connect-ai-marketer'; // becomes `npx connect-ai-marketer` once it is on npm
 
 function openFile(f) {
   const c = process.platform === 'darwin' ? ['open', [f]] : process.platform === 'win32' ? ['cmd', ['/c', 'start', '', f]] : ['xdg-open', [f]];
@@ -32,15 +32,16 @@ function openFile(f) {
 const HELP = `${NAME}: the marketing team of your unmanned AI company, on duty 24/7 in Ego Lite.
 
   setup                      make your work folder + config, install the skill for your agents
-  doctor                     check Ego Lite, config, and the team plan
+  doctor [--json]            check Node, Ego Lite, the skill, config and team plan; prints the fix for each problem
   roles                      list the AI teammates and what each one does
-  team <event>               run an event from team.json (new-video, daily)
+  team <event>               run an event from team.json (before-upload, new-video, daily)
                              new-video takes --video <id> --sheet <sheet.json> --post <post.json>
   run <role> <action>        run one role, e.g. run listener listen --kw "ego lite"
                              run comment-replier scan | send --file replies.json
                              run studio-finisher finish|check --video <id> --sheet sheet.json
                              run crossposter draft --post post.json
-                             run analyst read            run benchmarker bench --kw "keyword"
+                             run analyst read [--site x|youtube]
+                             run benchmarker bench --kw "keyword" [--days 14]
                              run breakdown grab --url <post>
                              run form-filler questions --url <form>   then fill --url <form> --file answers.json
   watch [--every 10] [--once] on duty 24/7: comments every 10 min, daily duties once a day
@@ -86,19 +87,17 @@ async function main() {
     const PATHS = [path.join(process.env.HOME || process.env.USERPROFILE || '', '.local', 'bin')];
     for (let i = 0; i < 180; i++) {
       process.env.PATH = PATHS.join(path.delimiter) + path.delimiter + process.env.PATH;
-      if (egoInstalled()) { log('  Ego Lite: ready. Your marketing team can start: npx connect-ai-marketer doctor'); return; }
+      if (egoInstalled()) { log('  Ego Lite: ready. Your marketing team can start: ' + RUN + ' doctor'); return; }
       await new Promise((r) => setTimeout(r, 10000));
     }
     log('  Still no ego-browser command. Open a new terminal after Ego Lite finishes its first-run steps, then run setup again.');
     return;
   }
   if (cmd === 'doctor') {
-    log(`  Ego Lite (ego-browser): ${egoInstalled() ? 'ok' : 'missing, see https://lite.ego.app'}`);
-    let c = null; try { c = config(h); log(`  config: ok (${path.join(h, 'config.json')})`); } catch (e) { log('  config: ' + e.message); }
-    const p = plan(h); log(`  team plan: ${Object.keys(p.events).join(', ')}`);
-    for (const [ev, steps] of Object.entries(p.events)) for (const s of steps) if (!ROLES[s.role]?.actions[s.action]) log(`  WARNING ${ev}: ${s.role} ${s.action} does not exist`);
-    if (c && !(c.listen?.keywords || []).length) log('  note: listen.keywords is empty');
-    log(`  waiting approvals: ${inbox.list(h).filter((x) => x.status === 'waiting').length}`);
+    const list = checks({h});
+    if (flag('json')) log(JSON.stringify(list, null, 1));
+    else log(render(list, {color: (t, st) => (st === 'fail' || st === 'warn' ? gold(t) : dimmed(t))}));
+    if (list.some((c) => c.status === 'fail')) process.exitCode = 1;
     return;
   }
   if (cmd === 'inbox') { const w = inbox.list(h).filter((x) => ['waiting', 'typed'].includes(x.status)); if (!w.length) return log('  nothing waiting'); for (const x of w) log(`  ${x.id}  ${x.status.padEnd(7)} ${x.role} · ${x.channel}\n      ${x.text.replace(/\n/g, '\n      ')}`); return; }

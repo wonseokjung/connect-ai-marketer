@@ -16,6 +16,9 @@ import {plan, ROLES} from '../lib/team.mjs';
 import {writerPrompt, parseReplies} from '../lib/watch.mjs';
 import {views, ageDays, patterns} from '../roles/benchmarker/run.mjs';
 import {numbers} from '../roles/analyst/run.mjs';
+import {count, seconds, clock, unset} from '../lib/num.mjs';
+import {checks, render} from '../lib/doctor.mjs';
+import {egoCommand} from '../lib/ego.mjs';
 
 let n = 0;
 const t = async (name, fn) => { await fn(); n++; console.log('  ok ' + name); };
@@ -71,5 +74,51 @@ await t('benchmarker reads views and age in English and Korean', () => {
 await t('analyst parses X numbers', () => {
   const p = numbers({stats: '4 replies, 2 reposts, 31 likes, 1 bookmark, 2048 views'});
   assert.deepEqual([p.views, p.likes, p.replies, p.reposts], [2048, 31, 4, 2]);
+});
+await t('numbers as sites print them', () => {
+  assert.deepEqual(['24K', '5.7M', '2.69M subscribers', '6.1K videos', '696.3K Followers', '구독자 2.69만명', '조회수 3.4만회', '1,234 views', 'No views'].map(count), [24000, 5700000, 2690000, 6100, 696300, 26900, 34000, 1234, 0]);
+  assert.deepEqual(['16h ago', '1d ago', '1mo ago', '1y ago', '3일 전', '15 minutes ago'].map(ageDays), [0, 1, 30, 365, 3, 0]);
+  assert.deepEqual(['11:11', '1:02:03', 'SHORTS', ''].map(seconds), [671, 3723, 0, 0]);
+  assert.equal(clock(3723), '1:02:03'); assert.equal(clock(671), '11:11');
+  assert.ok(unset('your_x_handle') && unset('@yourchannel') && unset('') && !unset('realname'));
+});
+const fake = (o = {}) => ({egoVersion: () => 'ego-browser 0.6', egoAlive: () => '', psPolicy: () => 'RemoteSigned', ...o});
+await t('doctor: old Node, PowerShell policy, Ego Lite not on PATH yet, each with an English and Korean fix', () => {
+  const fh = fs.mkdtempSync(path.join(os.tmpdir(), 'cam-home-'));
+  fs.mkdirSync(path.join(fh, '.local', 'bin'), {recursive: true}); fs.writeFileSync(path.join(fh, '.local', 'bin', 'ego-browser.exe'), '');
+  const list = checks({h: null, home: fh, env: {LOCALAPPDATA: path.join(fh, 'L')}, platform: 'win32', node: '16.20.0', probe: fake({egoVersion: () => '', psPolicy: () => 'Restricted'})});
+  const by = (l) => list.find((c) => c.label === l);
+  assert.equal(by('Node.js').status, 'fail'); assert.ok(by('Node.js').fix.ko.includes('nodejs.org') && by('Node.js').fix.en.includes('new one'));
+  assert.equal(by('PowerShell scripts').status, 'warn'); assert.ok(by('PowerShell scripts').fix.en.includes('npx.cmd') && by('PowerShell scripts').fix.ko.includes('npx.cmd'));
+  assert.ok(by('Ego Lite (ego-browser)').detail.includes('does not see it yet')); assert.ok(by('Ego Lite (ego-browser)').fix.ko.includes('PowerShell 창을 닫고 새로'));
+  assert.equal(by('Agent skill').status, 'warn');
+  assert.ok(render(list).includes('KO  '));
+  for (const c of list) if (c.fix) assert.ok(!/[「」—]/.test(c.fix.ko), 'no corner brackets or em dash in Korean: ' + c.label);
+});
+await t('doctor: Ego Lite missing, skill missing for Claude, example config values', () => {
+  const fh = fs.mkdtempSync(path.join(os.tmpdir(), 'cam-home-'));
+  fs.mkdirSync(path.join(fh, '.claude'), {recursive: true});
+  const wh = home(fs.mkdtempSync(path.join(os.tmpdir(), 'cam-w-'))); fs.copyFileSync(new URL('../config.example.json', import.meta.url), path.join(wh, 'config.json'));
+  const list = checks({h: wh, home: fh, env: {}, platform: 'darwin', node: '22.1.0', probe: fake({egoVersion: () => ''})});
+  const by = (l) => list.find((c) => c.label === l);
+  assert.equal(by('Node.js').status, 'ok');
+  assert.ok(by('Ego Lite (ego-browser)').fix.en.includes('https://lite.ego.app') && by('Ego Lite (ego-browser)').fix.ko.includes('그래도 열기'));
+  assert.equal(by('Skill for Claude Code').status, 'fail'); assert.ok(by('Skill for Claude Code').fix.en.includes('skill --agent claude'));
+  assert.equal(by('Config').status, 'warn'); assert.ok(by('Config').detail.includes('x.handle'));
+  assert.equal(by('Team plan').status, 'ok');
+  assert.equal(list.some((c) => c.label === 'PowerShell scripts'), false);
+});
+await t('doctor: all good, and Ego Lite installed but closed', () => {
+  const fh = fs.mkdtempSync(path.join(os.tmpdir(), 'cam-home-'));
+  const wh = home(fs.mkdtempSync(path.join(os.tmpdir(), 'cam-w-')));
+  fs.writeFileSync(path.join(wh, 'config.json'), JSON.stringify({instagram: {handle: 'shop'}, x: {handle: 'shop'}, youtube: {handle: '@shop'}, listen: {keywords: ['shop']}}));
+  const ok = checks({h: wh, home: fh, env: {}, platform: 'darwin', node: '22.1.0', probe: fake()});
+  assert.ok(ok.every((c) => c.status !== 'fail'), JSON.stringify(ok.filter((c) => c.status === 'fail')));
+  const closed = checks({h: wh, home: fh, env: {}, platform: 'darwin', node: '22.1.0', probe: fake({egoAlive: () => 'connect ECONNREFUSED'})});
+  assert.equal(closed.find((c) => c.label === 'Ego Lite running').status, 'fail');
+});
+await t('ego-browser on Windows: .exe runs directly, .cmd goes through the shell', () => {
+  assert.deepEqual(egoCommand('darwin'), {file: 'ego-browser', shell: false});
+  assert.deepEqual(egoCommand('win32', () => 'C:\\Users\\a\\.local\\bin\\ego-browser\r\nC:\\Users\\a\\.local\\bin\\ego-browser.cmd\r\n'), {file: '"C:\\Users\\a\\.local\\bin\\ego-browser.cmd"', shell: true});
 });
 console.log(`\n${n} passed`);
