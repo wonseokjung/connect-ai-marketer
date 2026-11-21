@@ -1,11 +1,15 @@
 # connect-ai-marketer
 
 **무인 AI 자율화 회사의 마케팅팀. 24시간, 일주일 내내 내 로그인된 브라우저에서 일합니다.**
-CONNECT AI LAB 공개 코드 · MIT + Commons Clause (무료로 쓰되 판매 금지) · [에고라이트(Ego Lite)](https://lite.ego.app) 위에서 동작
+CONNECT AI LAB · 모두를 위한 AI 교육 · MIT + Commons Clause 공개 코드(무료로 쓰되 판매 금지) · [에고라이트(Ego Lite)](https://lite.ego.app) 위에서 동작
 
 ```bash
 npx github:wonseokjung/connect-ai-marketer setup
 ```
+
+짧은 명령 `npx connect-ai-marketer` 는 npm 배포와 함께 열립니다. 그 전까지는 위의 `github:` 한 줄을 그대로 쓰세요.
+
+[![connect-ai-marketer](docs/hero.webp)](docs/index.html)
 
 ## 처음이면 이 순서대로
 
@@ -25,9 +29,9 @@ npx github:wonseokjung/connect-ai-marketer setup
    npx github:wonseokjung/connect-ai-marketer watch
    ```
 
-![connect-ai-marketer](docs/hero.webp)
+## 팀
 
-AI 팀원 8명이 일합니다. 팀원은 하나씩 만들고 근무표(`team.json`)로 엮습니다. 댓글은 10분마다, 리스닝은 매일 아침, 업로드 마무리와 게시는 영상이 올라갈 때마다. `npx github:wonseokjung/connect-ai-marketer watch` 하면 팀이 24시간 근무를 시작합니다. 글은 여러분의 에이전트(Claude Code, Codex, Antigravity)가 쓰고, 킷은 에고라이트 안에서 찾고, 확인하고, 결재함에 넣고, 입력합니다. 내 탭은 건드리지 않습니다.
+AI 팀원 8명이 일합니다. 팀원은 하나씩 만들고 근무표(`team.json`)로 엮습니다. 글은 여러분의 에이전트(Claude Code, Codex, Antigravity)가 쓰고, 킷은 에고라이트 안에서 찾고, 확인하고, 결재함에 넣고, 입력합니다. 내 탭은 건드리지 않습니다.
 
 | 팀원 | 하는 일 | 상태 |
 |---|---|---|
@@ -35,20 +39,63 @@ AI 팀원 8명이 일합니다. 팀원은 하나씩 만들고 근무표(`team.js
 | 리스닝 담당 listener | X와 스레드에서 키워드 검색, 반응 순 정리, 리포트 | v0.1 |
 | 업로드 마무리 담당 studio-finisher | 시트대로 제목, 설명, 재생목록, 태그를 채우고 저장, 새로고침해서 비교 | v0.1 |
 | 게시 담당 crossposter | 채널별 초안, X 가중치 글자 수, 결재함, 승인하면 입력 | v0.1 |
-| 숫자 담당 analyst | 내 X 최근 글 숫자, 반응 좋은 글 5개와 답글 | v0.1 |
-| 벤치마크 담당 benchmarker | 키워드로 유튜브 최근 2주 영상을 조회수 순으로, 제목 패턴 | v0.1 |
+| 벤치마크 담당 benchmarker | 올리기 전에 키워드로 유튜브 최근 상위 영상의 조회수, 올린 지 며칠, 길이, 하루 조회수 | v0.1 |
+| 숫자 담당 analyst | 내 X · 유튜브 공개 숫자를 매일 CSV 한 줄로, 책상에 변화량 | v0.1 |
 | 뜯어보기 담당 breakdown | 터진 글 · 영상의 글, 숫자, 첫 몇 초 장면 | v0.1 |
 | 신청서 담당 form-filler | 크리에이터 프로그램 신청서를 채우고 제출 직전에 멈춤 | v0.1 |
 | 상품 태그 담당 tagger | 쇼핑 태그 | 다음 |
 
 ## 팀이 일하는 방식
-- **역할**: `roles/<id>/` 의 `role.json` + `run.mjs`. 역할끼리는 작업 폴더의 JSON 파일로 주고받습니다.
-- **순서표** `team.json`: 작업 폴더에 복사해서 순서를 바꾸면 나만의 팀이 됩니다.
+
+```
+team before-upload ─▶ 벤치마크 담당 (리포트)
+team new-video     ─▶ 업로드 마무리 ─▶ 게시 담당 (초안 → 결재함) ─▶ 댓글 담당
+team daily         ─▶ 리스닝 ─▶ 숫자 담당 ─▶ 댓글 담당 ─▶ 책상
+watch              ─▶ 댓글은 10분마다, daily 는 하루 한 번
+```
+
+- **역할**: `roles/<id>/` 의 `role.json` + `run.mjs`. 역할끼리는 작업 폴더의 파일로 주고받습니다.
+- **순서표** `team.json`: setup 이 작업 폴더에 복사합니다. 순서를 바꾸면 나만의 팀이 됩니다. 숫자 담당과 벤치마크 담당은 선택 단계라서 `config.json` 에 아이디나 키워드를 넣어야 일합니다.
 - **결재함**: 모든 게시와 답글은 `approve <id>` 전까지 기다립니다. 믿는 역할만 `config.autoSend` 에 넣으세요.
-- **책상**: `desk` 가 오늘의 결재, 답글, 업로드 확인, 사람들이 하는 말을 한 장으로 엽니다.
+- **기본은 읽기만**: 리스닝, 벤치마크, 숫자, 뜯어보기 담당은 공개 페이지를 읽기만 합니다. 좋아요, 팔로우, 구독, 답글은 하지 않습니다.
+- **책상**: `desk` 가 오늘의 결재, 답글, 업로드 확인, 내 숫자, 벤치마크, 사람들이 하는 말을 한 장으로 엽니다.
 - **사람 문**: 로그인, 모든 게시, 마지막 게시 버튼(`crossposter.finalClick` 을 켜지 않으면).
 
 명령은 영어 README와 같습니다. 작업 폴더는 `~/.connect-ai-marketer` 이고 킷 안에는 아무것도 쓰지 않습니다.
 
+## 막힐 때
+
+먼저 `doctor` 를 실행하세요. 안 되는 줄마다 영어와 한국어로 고치는 방법이 나옵니다. 그래도 막히면 doctor 결과를 바이브코딩 도구에 붙여 넣고 고쳐 달라고 하세요.
+
+**윈도우: 이 시스템에서 스크립트를 실행할 수 없으므로...**
+PowerShell 이 `npx` 를 막은 것입니다. `npx` 대신 `npx.cmd` 로 실행하거나(예: `npx.cmd github:wonseokjung/connect-ai-marketer setup`), 명령 프롬프트(cmd)에서 같은 줄을 실행하세요. 내 계정에서만 스크립트를 허용하려면: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`
+
+**node, npx, ego-browser 를 찾을 수 없다 / command not found**
+터미널은 열릴 때만 PATH를 읽습니다. Node.js 를 설치한 뒤, 또는 에고라이트 첫 안내를 마친 뒤에는 터미널을 닫고 새로 여세요. 맥에서 ego-browser 만 안 잡히면 지금 창에서 `export PATH="$HOME/.local/bin:$PATH"`
+
+**npm 이 1 vulnerability 같은 문구를 보여 줘요**
+오류가 아니라 npm 의 점검 안내이고, 설치는 끝났습니다. 이 킷은 npm 의존성이 없습니다. `doctor` 로 확인하고, 이 문구 때문에 `npm audit fix --force` 는 실행하지 마세요.
+
+**윈도우가 에고라이트 설치를 막아요 (Windows의 PC 보호)**
+추가 정보 > 실행을 누르세요. 첫 안내를 끝까지 마친 뒤 PowerShell 을 새로 여세요.
+
+**맥, 윈도우 둘 다 되나요?**
+둘 다 됩니다. 에고라이트는 맥용, 윈도우용이 따로 있고, 어느 쪽이든 Node.js 18 이상이면 됩니다.
+
+**안티그래비티(제미나이)나 코덱스로도 되나요?**
+됩니다. setup 이 찾은 도구마다 스킬을 넣습니다: Claude Code, Codex, Antigravity. 안티그래비티에서는 터미널에 설치 한 줄을 넣거나, 에이전트에게 실행해 달라고 하면 됩니다.
+
+**스킬은 어디에 있나요?**
+setup 이 `skill/SKILL.md` 를 `~/.claude/skills/connect-ai-marketer`(Claude Code), `~/.agents/skills/connect-ai-marketer`(Codex), `~/.gemini/config/skills/connect-ai-marketer`(Antigravity)에 복사합니다. 다시 넣으려면 `skill` 을 실행하고, 도구를 다시 시작해야 새 스킬이 보입니다.
+
+**회사 컴퓨터**
+회사 PC는 보안 정책으로 새 브라우저나 스크립트가 막혀 있는 경우가 많습니다. 개인 컴퓨터에서 하시거나, IT 담당자에게 에고라이트와 Node.js 허용을 문의하세요. 정책을 우회하지는 마세요.
+
+**npx github: 가 매번 느려요**
+npx 는 매번 GitHub 에서 킷을 받아 옵니다. 설치해 두려면 `npm install -g github:wonseokjung/connect-ai-marketer` 후 `connect-ai-marketer doctor` 처럼 쓰세요.
+
 ## 라이선스
 MIT + Commons Clause. 읽고, 쓰고, 고치고, 나눠도 되고, 내 사업 홍보에 써도 됩니다. 이 코드를 팔거나, 이 코드로 유료 강의 · 호스팅 · 서비스를 파는 것은 안 됩니다. 자세한 내용은 LICENSE.
+
+## 준비물
+Node 18 이상, 맥 또는 윈도우, 쓰는 사이트에 로그인된 에고라이트. 에고라이트는 별도 회사가 만든 무료 브라우저이고 약관이 따로 있습니다. NOTICE.md 참고.

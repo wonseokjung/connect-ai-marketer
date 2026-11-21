@@ -24,11 +24,11 @@ pre .g{color:var(--gold2)}
 footer{margin-top:64px;border-top:1px solid var(--line);padding-top:20px;color:var(--mute);font-size:13px}
 a{color:var(--gold2)}
 </style></head><body><div class="wrap">
-<div class="by">Source available by CONNECT AI LAB</div>
+<div class="by">CONNECT AI LAB · AI education for everyone</div>
 <h1>The marketing team of your<br><b>unmanned AI company. 24/7.</b></h1>
-<p class="lead">Eight AI teammates: one answers comments every 10 minutes, one, listens to what people say every morning, two get every upload out, inside Ego Lite with your own logins. Your agent writes the words; every post waits for your approval.</p>
+<p class="lead">Eight AI teammates: one answers comments every 10 minutes, one listens to what people say every morning, one reads your numbers, two get every upload out, inside Ego Lite with your own logins. Your agent writes the words; every post waits for your approval.</p>
 <img src="hero.webp" alt="connect-ai-marketer" style="width:100%;max-width:100%;margin-top:28px;border:1px solid var(--line)">
-<div class="cmd"><span id="c">npx connect-ai-marketer setup</span><button id="b">Copy</button></div>
+<div class="cmd"><span id="c">npx github:wonseokjung/connect-ai-marketer setup</span><button id="b">Copy</button></div>
 <div class="small">Free to use, not for resale (MIT + Commons Clause) · Node 18+ · needs <a href="https://lite.ego.app">Ego Lite</a> (free, separate product) · works with Claude Code, Codex, Antigravity</div>
 
 <h2>The team</h2>
@@ -37,16 +37,17 @@ a{color:var(--gold2)}
  <div class="role"><div class="id">listener</div><h3>Listener</h3><p>Searches X and Threads for your keywords, keeps only real mentions, ranks them by reach and writes a report.</p><div class="gate">Read only: never likes or replies</div></div>
  <div class="role"><div class="id">studio-finisher</div><h3>Upload finisher</h3><p>Fills title, description, playlists and tags from your sheet, saves, then reloads and checks what is really saved.</p><div class="gate">Never trusts "Changes saved"</div></div>
  <div class="role"><div class="id">crossposter</div><h3>Crossposter</h3><p>One video into posts for X, Threads and LinkedIn. Checks X weighted length, queues drafts, types on approve.</p><div class="gate">Final Post click is yours by default</div></div>
- <div class="role"><div class="id">benchmarker</div><h3>Benchmarker</h3><p>Searches YouTube for your topic, keeps the last 2 weeks, ranks by views and counts title patterns.</p><div class="gate">Read only</div></div>
- <div class="role"><div class="id">analyst</div><h3>Analyst</h3><p>Reads your own X numbers every morning: recent posts, your best 5 and what people replied.</p><div class="gate">Read only</div></div>
+ <div class="role"><div class="id">benchmarker</div><h3>Benchmarker</h3><p>Before an upload: the top recent YouTube results for your keyword with views, upload age, length and views a day, plus title patterns.</p><div class="gate">Read only</div></div>
+ <div class="role"><div class="id">analyst</div><h3>Analyst</h3><p>Reads your own public X and YouTube numbers every morning into a daily CSV; the desk shows the change since last time.</p><div class="gate">Read only</div></div>
  <div class="role"><div class="id">breakdown</div><h3>Breakdown</h3><p>One post that took off: its text, numbers and frames from the first seconds, for your agent to study.</p><div class="gate">Read only</div></div>
  <div class="role"><div class="id">form-filler</div><h3>Form filler</h3><p>Reads a creator-program form, fills it from your profile, and stops before Submit with a screenshot.</p><div class="gate">Submit is always yours</div></div>
  <div class="role next"><div class="id">tagger</div><h3>Tagger</h3><p>Shopping tags on every video that fits.</p><div class="gate">next</div></div>
 </div>
 
 <h2>The work schedule</h2>
-<pre><span class="g">team new-video</span>  studio-finisher  →  crossposter (drafts → inbox)  →  comment-replier
-<span class="g">team daily</span>      listener  →  comment-replier  →  desk
+<pre><span class="g">team before-upload</span>  benchmarker  →  report
+<span class="g">team new-video</span>      studio-finisher  →  crossposter (drafts → inbox)  →  comment-replier
+<span class="g">team daily</span>          listener  →  analyst  →  comment-replier  →  desk
 
 roles/&lt;id&gt;/role.json + run.mjs     one employee
 team.json                         the order (copy it, change it, it is your team)
@@ -54,16 +55,17 @@ inbox/approvals.json              everything that leaves waits here
 desk                              today on one page</pre>
 
 <h2>Commands</h2>
-<pre>npx connect-ai-marketer roles
-npx connect-ai-marketer watch   <span class="g"># on duty 24/7</span>
-npx connect-ai-marketer run listener listen --kw "your product"
-npx connect-ai-marketer run comment-replier scan
-npx connect-ai-marketer run comment-replier send --file replies.json
-npx connect-ai-marketer team new-video --video &lt;id&gt; --sheet sheet.json --post post.json
-npx connect-ai-marketer inbox
-npx connect-ai-marketer approve a3
-npx connect-ai-marketer desk
-npx connect-ai-marketer xcount "a post with a link"</pre>
+<pre>npx github:wonseokjung/connect-ai-marketer doctor   <span class="g"># what is missing, and the exact fix</span>
+npx github:wonseokjung/connect-ai-marketer watch    <span class="g"># on duty 24/7</span>
+npx github:wonseokjung/connect-ai-marketer run benchmarker bench --kw "your topic"
+npx github:wonseokjung/connect-ai-marketer run analyst read
+npx github:wonseokjung/connect-ai-marketer run listener listen --kw "your product"
+npx github:wonseokjung/connect-ai-marketer run comment-replier scan
+npx github:wonseokjung/connect-ai-marketer team new-video --video &lt;id&gt; --sheet sheet.json --post post.json
+npx github:wonseokjung/connect-ai-marketer inbox
+npx github:wonseokjung/connect-ai-marketer approve a3
+npx github:wonseokjung/connect-ai-marketer desk</pre>
+<div class="small">The short form <code>npx connect-ai-marketer</code> is coming with the npm release.</div>
 
 <h2>Rules the team keeps</h2>
 <div class="rules">

@@ -8,6 +8,11 @@ description: The marketing team of an unmanned AI company, on duty 24/7 in Ego L
 You are the brain; the kit is the hands. Each role does one job in Ego Lite with the user's own logins.
 You write the words (replies, posts). The kit scans, checks, queues and types.
 
+`CAM` below means `npx github:wonseokjung/connect-ai-marketer` (or `connect-ai-marketer` if the user installed it with `npm install -g`; `CAM` once it is on npm). On Windows PowerShell, if scripts are blocked, use `npx.cmd`.
+
+## First: doctor
+When anything fails, or before the first run, run `CAM doctor` (`--json` for you). Each failing line carries the exact fix in English and Korean. Walk the user through the fixes in their language, top to bottom. Never change system security settings yourself; show the user the command and let them decide.
+
 ## Team
 | Teammate | Job | Your part |
 |---|---|---|
@@ -15,21 +20,22 @@ You write the words (replies, posts). The kit scans, checks, queues and types.
 | listener | search X + Threads for keywords, rank, report | read the report, tell the user what matters |
 | studio-finisher | read a video's saved fields after reload, diff with the sheet | fix what differs (or tell the user) |
 | crossposter | per-channel drafts, X weighted length, inbox, type on approve | write each channel's post |
-| analyst | your recent X posts with numbers, best 5, replies under them | say which topics pull conversation and what people asked for |
-| benchmarker | YouTube search, last 2 weeks by views, title patterns, thumbnail links | read the thumbnails, pick the 3 patterns that win |
+| analyst | the user's own public numbers: X followers + recent posts (best 5, replies), YouTube subscribers + latest videos; one daily CSV row per site, desk card with the change | say which topics pull views and conversation, and what people asked for |
+| benchmarker | before an upload: YouTube search for a keyword, last N days by views, upload age, length, views a day, median length, title patterns | read the thumbnails, pick the 3 patterns that win, suggest a length |
 | breakdown | one post: text, numbers, frames from the first seconds | write hook, structure, on-screen words, call to action |
 | form-filler | read a form's questions, fill by label, stop before Submit with a screenshot | pick answers that meet the form's rules; never secrets |
 
 ## Loops
 - Comments (every 10 min if the user asks):
-  1. `npx connect-ai-marketer run comment-replier scan` → read the file it prints (`out/comments-<date>.json`).
+  1. `CAM run comment-replier scan` → read the file it prints (`out/comments-<date>.json`).
   2. For each comment write `{commentId, url, user, reply}` into `replies.json`.
-  3. `npx connect-ai-marketer run comment-replier send --file replies.json` → queued in the inbox (or sent if the user put `comment-replier` in `config.autoSend`).
-- 24 hours without an open chat: set `config.writer.command` to your agent's headless command (`claude -p`, `codex exec`), then `npx connect-ai-marketer watch`. Every 10 minutes it scans, asks the agent for JSON replies, and queues them.
-- New video: `npx connect-ai-marketer team new-video --video <id> --sheet sheet.json --post post.json`
+  3. `CAM run comment-replier send --file replies.json` → queued in the inbox (or sent if the user put `comment-replier` in `config.autoSend`).
+- 24 hours without an open chat: set `config.writer.command` to your agent's headless command (`claude -p`, `codex exec`), then `CAM watch`. Every 10 minutes it scans, asks the agent for JSON replies, and queues them.
+- New video: `CAM team new-video --video <id> --sheet sheet.json --post post.json`
   - sheet.json: `{title, description, playlists, tags}`
   - post.json: `{url, channels: {x, threads, linkedin}}`
-- Daily: `npx connect-ai-marketer team daily`, then `npx connect-ai-marketer desk`.
+- Before an upload: `CAM team before-upload --kw "<topic>"` (or `CAM run benchmarker bench --kw "<topic>" --days 14`), then read `out/bench-<keyword>-<date>.md`.
+- Daily: `CAM team daily` (listener, analyst, comment-replier), then `CAM desk`. Analyst needs `x.handle` and/or `youtube.handle` in config.json; history is `out/analyst-daily.csv`.
 
 ## Reply rules (comment-replier)
 - Reply in the commenter's language. Short, warm, varied. One reply per comment.
@@ -40,7 +46,7 @@ You write the words (replies, posts). The kit scans, checks, queues and types.
 
 ## Post rules (crossposter)
 - One idea per post, the user's own claims and numbers only.
-- X counts Korean, Japanese and Chinese characters as 2 and every link as 23; check with `npx connect-ai-marketer xcount "<text>"`. The kit refuses an X draft over 280.
+- X counts Korean, Japanese and Chinese characters as 2 and every link as 23; check with `CAM xcount "<text>"`. The kit refuses an X draft over 280.
 - Nothing goes out without `approve <id>` from the user. The final Post click is the user's unless `config.crossposter.finalClick` is true.
 
 ## Never
