@@ -21,11 +21,6 @@ In chat apps that render Markdown images (Antigravity, Cursor, IDE chat), open e
 
 Local copies (`chat-*.gif`, square `*.gif`, and `mascot.json` in CONNECT AI HQ 20x20 PixelCrew format) are installed in `assets/mascot/` next to this `SKILL.md`. Never put these portraits inside the user's SNS posts, replies, or channel drafts — chat replies only. Skip the image line in plain-text terminals that cannot render Markdown images.
 
-## Team Handoff (`connect-ai-handoff/v1`)
-When working in a multi-employee pipeline (e.g. `connect-ai-writer` / `connect-ai-motion` -> `connect-ai-marketer`, or inside CONNECT AI HQ):
-- Before starting, read `handoff.json` in the work folder if present (or call HQ MCP `read_handoff_packet`) to load finished drafts, videos, and channel copy.
-- On completion, write `handoff.json` (`schema: "connect-ai-handoff/v1"`, `from: "connect-ai-marketer"`, `to: "founder"`, `summary`, `artifacts`, `nextAction`) or call HQ MCP `write_handoff_packet` with only safe report/inbox paths (never secrets or logins).
-
 ## Team
 | Teammate | Job | Your part |
 |---|---|---|
