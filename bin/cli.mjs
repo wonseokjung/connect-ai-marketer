@@ -24,9 +24,15 @@ const args = Object.fromEntries(VALUED.map((k) => [k, opt(k)]).filter(([, v]) =>
 const H = () => home(opt('home'));
 const RUN = 'npx github:wonseokjung/connect-ai-marketer'; // becomes `npx connect-ai-marketer` once it is on npm
 
-function openFile(f) {
-  const c = process.platform === 'darwin' ? ['open', [f]] : process.platform === 'win32' ? ['cmd', ['/c', 'start', '', f]] : ['xdg-open', [f]];
-  spawn(c[0], c[1], {detached: true, stdio: 'ignore'}).unref();
+export function openFile(f) {
+  if (process.platform === 'darwin') {
+    spawn('open', [f], {detached: true, stdio: 'ignore'}).unref();
+  } else if (process.platform === 'win32') {
+    const escaped = f.replace(/"/g, '""');
+    spawn('cmd.exe', ['/c', `start "" "${escaped}"`], {windowsVerbatimArguments: true, detached: true, stdio: 'ignore'}).unref();
+  } else {
+    spawn('xdg-open', [f], {detached: true, stdio: 'ignore'}).unref();
+  }
 }
 
 const HELP = `${NAME}: the marketing team of your unmanned AI company, on duty 24/7 in Ego Lite.

@@ -6,14 +6,14 @@ import assert from 'node:assert/strict';
 import {xLength} from '../lib/xcount.mjs';
 import * as inbox from '../lib/inbox.mjs';
 import * as log from '../lib/log.mjs';
-import {wrap} from '../lib/ego.mjs';
+import {wrap, getEgoBin} from '../lib/ego.mjs';
 import {home} from '../lib/paths.mjs';
 import {rank} from '../roles/listener/run.mjs';
 import {compare} from '../roles/studio-finisher/run.mjs';
 import {draft} from '../roles/crossposter/run.mjs';
 import {queueOrSend} from '../roles/comment-replier/run.mjs';
 import {plan, ROLES} from '../lib/team.mjs';
-import {writerPrompt, parseReplies} from '../lib/watch.mjs';
+import {writerPrompt, parseReplies, ask} from '../lib/watch.mjs';
 import {views, ageDays, patterns} from '../roles/benchmarker/run.mjs';
 import {numbers} from '../roles/analyst/run.mjs';
 
@@ -71,5 +71,19 @@ await t('benchmarker reads views and age in English and Korean', () => {
 await t('analyst parses X numbers', () => {
   const p = numbers({stats: '4 replies, 2 reposts, 31 likes, 1 bookmark, 2048 views'});
   assert.deepEqual([p.views, p.likes, p.replies, p.reposts], [2048, 31, 4, 2]);
+});
+await t('getEgoBin returns platform-safe binary name', () => {
+  const bin = getEgoBin();
+  if (process.platform === 'win32') {
+    assert.ok(bin === 'ego-browser.cmd' || bin === 'ego-browser.exe' || bin === 'ego-browser');
+  } else {
+    assert.equal(bin, 'ego-browser');
+  }
+});
+await t('ask captures stderr and fails clearly on non-zero exit', async () => {
+  await assert.rejects(
+    () => ask('node -e "process.stderr.write(\'auth failed\'); process.exit(1)"', 'hello'),
+    /writer process exited with code 1: auth failed/
+  );
 });
 console.log(`\n${n} passed`);
