@@ -9,6 +9,14 @@ npx github:wonseokjung/connect-ai-marketer setup
 
 [![connect-ai-marketer](docs/hero.webp)](docs/index.html)
 
+<p align="center">
+  <img src="skill/assets/mascot/greet.gif" width="68" alt="Joseon Bobusang Marketer · Greet">&nbsp;
+  <img src="skill/assets/mascot/scan.gif" width="68" alt="Joseon Bobusang Marketer · Scan">&nbsp;
+  <img src="skill/assets/mascot/draft.gif" width="68" alt="Joseon Bobusang Marketer · Draft">&nbsp;
+  <img src="skill/assets/mascot/done.gif" width="68" alt="Joseon Bobusang Marketer · Done"><br>
+  <sub><b>Joseon Bobusang · Marketer</b> (CONNECT AI HQ PixelCrew) — gently animated pixel portrait that switches expression as it greets, listens, drafts, and queues approvals.</sub>
+</p>
+
 Eight AI teammates, built one by one and wired by a work schedule (`team.json`): comments every 10 minutes, listening every morning, finishing and posting every upload. `npx connect-ai-marketer watch` puts the team on duty around the clock. Your agent (Claude Code, Codex, Antigravity) writes the words; the kit scans, checks, queues and types in Ego Lite, so your own tabs stay yours.
 
 | Teammate | What it does | Status |

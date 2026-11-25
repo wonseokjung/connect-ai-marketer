@@ -9,6 +9,14 @@ npx github:wonseokjung/connect-ai-marketer setup
 
 ![connect-ai-marketer](docs/hero.webp)
 
+<p align="center">
+  <img src="skill/assets/mascot/greet.gif" width="68" alt="조선 보부상 마케터 · 인사">&nbsp;
+  <img src="skill/assets/mascot/scan.gif" width="68" alt="조선 보부상 마케터 · 탐색">&nbsp;
+  <img src="skill/assets/mascot/draft.gif" width="68" alt="조선 보부상 마케터 · 초안">&nbsp;
+  <img src="skill/assets/mascot/done.gif" width="68" alt="조선 보부상 마케터 · 완료"><br>
+  <sub><b>조선 보부상 · 마케터</b> (CONNECT AI HQ PixelCrew) — 대화할 때 인사·댓글/채널 탐색·초안 작성·임시저장 완료 상태에 맞춰 작게 움직이며 표정이 바뀌는 픽셀 캐릭터예요.</sub>
+</p>
+
 AI 팀원 8명이 일합니다. 팀원은 하나씩 만들고 근무표(`team.json`)로 엮습니다. 댓글은 10분마다, 리스닝은 매일 아침, 업로드 마무리와 게시는 영상이 올라갈 때마다. `npx connect-ai-marketer watch` 하면 팀이 24시간 근무를 시작합니다. 글은 여러분의 에이전트(Claude Code, Codex, Antigravity)가 쓰고, 킷은 에고라이트 안에서 찾고, 확인하고, 결재함에 넣고, 입력합니다. 내 탭은 건드리지 않습니다.
 
 | 팀원 | 하는 일 | 상태 |
