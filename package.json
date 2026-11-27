@@ -1,7 +1,7 @@
 {
   "name": "connect-ai-marketer",
   "version": "0.1.0",
-  "description": "The marketing team of your unmanned AI company, on duty 24/7 in your logged-in browser: answers comments, listens on X and Threads, finishes YouTube uploads, drafts posts for every channel. Approval inbox, daily desk. Runs on Ego Lite. By CONNECT AI LAB.",
+  "description": "The marketing team of your unmanned AI company, on duty 24/7 in your logged-in browser: answers comments, listens on X and Threads, finishes YouTube uploads, drafts posts for every channel. Approval inbox, daily desk. Runs on CONNECT AI Browser or Ego Lite. By CONNECT AI LAB.",
   "type": "module",
   "bin": {
     "connect-ai-marketer": "bin/cli.mjs"

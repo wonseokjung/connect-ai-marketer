@@ -8,7 +8,9 @@ import {count, ageDays, seconds, clock, median, unset} from '../../lib/num.mjs';
 
 export const id = 'benchmarker';
 const SEARCH = `
+await step('유튜브 검색: ' + P.kw);
 await page.goto('https://www.youtube.com/results?search_query=' + encodeURIComponent(P.kw), {timeout: 40000}); await W(4000);
+await step('검색 결과 읽기');
 for (let s = 0; s < P.screens; s++) { await page.mouse.move(700, 500); await page.mouse.wheel(0, 3000); await W(1400); }
 done(await page.evaluate(() => [...document.querySelectorAll('ytd-video-renderer')].map(v => {
   const a = v.querySelector('a#video-title'); const meta = [...v.querySelectorAll('#metadata-line span')].map(s => s.innerText.trim());
@@ -59,7 +61,7 @@ export async function bench(h, cfg, {kw, days} = {}) {
   kw = kw || (cfg.bench?.keywords || []).find((k) => !unset(k));
   if (!kw) throw new Error('Need a keyword: --kw "<keyword>" (or bench.keywords in config.json)');
   days = +days || cfg.bench?.days || 14;
-  const raw = await run(wrap(SEARCH, {kw, screens: cfg.bench?.screens || 4}), {timeoutMs: 120000});
+  const raw = await run(wrap(SEARCH, {kw, screens: cfg.bench?.screens || 4}, {role: id, plan: ['유튜브 검색: ' + kw, '검색 결과 읽기']}), {timeoutMs: 120000});
   const rs = rows(raw, {days});
   const pats = patterns(rs.map((r) => r.title));
   const sum = summary(rs);

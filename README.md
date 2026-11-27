@@ -1,7 +1,7 @@
 # connect-ai-marketer
 
 **The marketing team of your unmanned AI company, on duty 24 hours a day, 7 days a week, in your own logged-in browser.**
-CONNECT AI LAB · AI education for everyone · source available under MIT + Commons Clause (free to use, not for resale) · runs on [Ego Lite](https://lite.ego.app)
+CONNECT AI LAB · AI education for everyone · source available under MIT + Commons Clause (free to use, not for resale) · runs on [CONNECT AI Browser](https://github.com/wonseokjung/connect-ai-browser) or [Ego Lite](https://lite.ego.app)
 
 ```bash
 npx github:wonseokjung/connect-ai-marketer setup
@@ -13,16 +13,17 @@ The short form `npx connect-ai-marketer` is coming with the npm release. Until t
 
 ## First time? In this order
 
-1. **Install Ego Lite**: download it for your computer (macOS or Windows) at [lite.ego.app](https://lite.ego.app), open it and finish the first-run steps.
-   - macOS will not open it: System Settings > Privacy & Security > Open Anyway
-   - Windows: run the installer, finish the first-run steps, then open a new PowerShell.
-2. **Install Node.js**: get the LTS from [nodejs.org](https://nodejs.org). Open a new terminal (PowerShell on Windows); `node -v` should be v18 or newer.
+1. **Install Node.js**: get the LTS from [nodejs.org](https://nodejs.org). Open a new terminal (PowerShell on Windows); `node -v` should be v20 or newer (CONNECT AI Browser needs 20; with Ego Lite, 18 is enough).
+2. **Install a browser for the team**, one of these:
+   - **CONNECT AI Browser** (ours, first choice): `npx github:wonseokjung/connect-ai-browser setup`. The team works there as the agent `marketer`, each run in a new space with its steps on screen.
+   - **Ego Lite**: download it at [lite.ego.app](https://lite.ego.app), open it and finish the first-run steps. macOS will not open it: System Settings > Privacy & Security > Open Anyway. Windows: finish the first-run steps, then open a new PowerShell.
+   - Both installed? CONNECT AI Browser is used. `"browser": "ego"` in config.json picks Ego Lite.
 3. **One vibe-coding tool**: Claude Code, ChatGPT Codex or Antigravity (Gemini). It writes the words.
 4. **One install line** in the terminal (or ask your vibe-coding tool to run it):
    ```bash
    npx github:wonseokjung/connect-ai-marketer setup
    ```
-5. **Sign in inside Ego Lite** to the sites the team works on (Instagram, X, Threads, YouTube Studio). Passwords and 2-step codes are yours to type.
+5. **Sign in inside that browser** to the sites the team works on (Instagram, X, Threads, YouTube Studio). Passwords and 2-step codes are yours to type.
 6. **Check, then go on duty**:
    ```bash
    npx github:wonseokjung/connect-ai-marketer doctor
@@ -31,7 +32,7 @@ The short form `npx connect-ai-marketer` is coming with the npm release. Until t
 
 ## The team
 
-Eight AI teammates, built one by one and wired by a work schedule (`team.json`). Your agent (Claude Code, Codex, Antigravity) writes the words; the kit scans, checks, queues and types inside Ego Lite, so your own tabs stay yours.
+Eight AI teammates, built one by one and wired by a work schedule (`team.json`). Your agent (Claude Code, Codex, Antigravity) writes the words; the kit scans, checks, queues and types inside your browser (CONNECT AI Browser or Ego Lite), in its own space, so your own tabs stay yours.
 
 | Teammate | What it does | Status |
 |---|---|---|
@@ -100,7 +101,7 @@ That is npm's audit notice, not an error, and the install has finished. This kit
 Choose More info, then Run anyway. Finish the first-run steps, then open a new PowerShell.
 
 **Mac or Windows?**
-Both. Ego Lite has a build for each; Node.js 18 or newer on either.
+Both. CONNECT AI Browser and Ego Lite run on each; Node.js 20 or newer on either (18 is enough with Ego Lite).
 
 **Does it work with Antigravity (Gemini) or Codex?**
 Yes. Setup installs the team's skill for every agent it finds: Claude Code, Codex and Antigravity. In Antigravity you can run the install line in its terminal, or ask the agent to run it for you.
@@ -121,4 +122,4 @@ Copy `roles/listener/`, edit `role.json` and `run.mjs`, register it in `lib/team
 MIT with the Commons Clause. Use it, change it, share it, and use it to market your own business. Do not sell it, sell access to it, or sell a paid course or service built mainly on it. See LICENSE.
 
 ## Requirements
-Node 18+, macOS or Windows, Ego Lite installed and signed in to the sites you use. Ego Lite is a separate free browser by its own company with its own terms. See NOTICE.md.
+Node 20+ (18+ with Ego Lite), macOS or Windows, CONNECT AI Browser or Ego Lite installed and signed in to the sites you use. Ego Lite is a separate free browser by its own company with its own terms. See NOTICE.md.

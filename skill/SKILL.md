@@ -1,11 +1,11 @@
 ---
 name: connect-ai-marketer
-description: The marketing team of an unmanned AI company, on duty 24/7 in Ego Lite (ego-browser). Use when the user wants to reply to Instagram comments, listen on X and Threads, read their own X numbers, benchmark YouTube before an upload, break down a post that took off, finish a YouTube upload (title, description, playlists, tags), turn a new video into posts for every channel, or fill a creator-program form. Also for "마케팅팀", "홍보팀", "댓글 답글", "리스닝", "벤치마크", "업로드 마무리", "크로스포스팅".
+description: The marketing team of an unmanned AI company, on duty 24/7 in the user's own browser: CONNECT AI Browser (cab) first, or Ego Lite (ego-browser). Use when the user wants to reply to Instagram comments, listen on X and Threads, read their own X numbers, benchmark YouTube before an upload, break down a post that took off, finish a YouTube upload (title, description, playlists, tags), turn a new video into posts for every channel, or fill a creator-program form. Also for "마케팅팀", "홍보팀", "댓글 답글", "리스닝", "벤치마크", "업로드 마무리", "크로스포스팅".
 ---
 
 # connect-ai-marketer: the marketing team of an unmanned AI company (24/7)
 
-You are the brain; the kit is the hands. Each role does one job in Ego Lite with the user's own logins.
+You are the brain; the kit is the hands. Each role does one job in the user's own browser with their own logins: CONNECT AI Browser (`cab`) when it is installed, else Ego Lite. `"browser": "cab"` or `"ego"` in config.json, or `CONNECT_AI_BROWSER=cab|ego`, picks one. In CONNECT AI Browser the team works as the agent `marketer`; every run makes a new space named for the role and the time (댓글 담당 09:30), the plan panel shows its steps, and at the end it closes only its own tabs (a typed post or a filled form stays open for the user).
 You write the words (replies, posts). The kit scans, checks, queues and types.
 
 `CAM` below means `npx github:wonseokjung/connect-ai-marketer` (or `connect-ai-marketer` if the user installed it with `npm install -g`; `CAM` once it is on npm). On Windows PowerShell, if scripts are blocked, use `npx.cmd`.
@@ -61,10 +61,11 @@ When anything fails, or before the first run, run `CAM doctor` (`--json` for you
 - Nothing goes out without `approve <id>` from the user. The final Post click is the user's unless `config.crossposter.finalClick` is true.
 
 ## Never
-- Never type passwords, codes or card numbers; the user signs in inside Ego Lite.
+- Never type passwords, codes or card numbers; the user signs in inside the browser (CONNECT AI Browser or Ego Lite).
 - Never like, follow, DM or delete on the user's behalf. Listening is read only.
-- Never run `ego-browser upgrade` or clear browser data without asking.
+- Never run `ego-browser upgrade` or `cab` setup or stop commands, and never clear browser data, without asking.
+- In CONNECT AI Browser, never list, claim, take over or close a space the team did not make.
 - Never put the user's logs, config or replies into a public repo.
 
 ## Add a role
-Copy `roles/listener/` to `roles/<your-role>/`, write `role.json` (name, duty, in, out, humanGates) and `run.mjs` (build an ego-browser script with `wrap()`, run it with `run()`), register it in `lib/team.mjs`, then add a step to `team.json`.
+Copy `roles/listener/` to `roles/<your-role>/`, write `role.json` (name, duty, in, out, humanGates) and `run.mjs` (build a browser script with `wrap(body, params, {role, plan})`, mark each step with `await step('...')`, run it with `run()`), register it in `lib/team.mjs`, then add a step to `team.json`.

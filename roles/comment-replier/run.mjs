@@ -8,7 +8,9 @@ import {writeJson, today} from '../../lib/paths.mjs';
 export const id = 'comment-replier';
 
 const SCAN = `
+await step('인스타 알림 읽기');
 await page.goto('https://www.instagram.com/notifications/', {timeout: 40000}); await W(4000);
+if (/\\/accounts\\/login/.test(await page.url())) throw new Error('Instagram is signed out in this browser. Sign in yourself in its window, then run scan again. Nothing was read.');
 const rows = await page.evaluate(() => [...document.querySelectorAll('main a[href*="/c/"]')].map(a => {
   let r = a; for (let i = 0; i < 8 && r && !/commented|replied|liked your comment|mentioned/.test(r.innerText || ''); i++) r = r.parentElement;
   const t = (r && r.innerText || '').replace(/\\s+/g, ' ');
@@ -16,6 +18,7 @@ const rows = await page.evaluate(() => [...document.querySelectorAll('main a[hre
 }));
 const seen = new Set(); const fresh = [];
 for (const r of rows) { const m = r.url.match(/\\/p\\/([^/]+)\\/c\\/(\\d+)/); if (!m || seen.has(m[2]) || P.done.includes(m[2])) continue; seen.add(m[2]); fresh.push({...r, post: m[1], commentId: m[2]}); }
+await step('새 댓글 읽기');
 for (const f of fresh.filter(x => x.kind === 'comment' || x.kind === 'reply')) {
   await page.goto(f.url, {timeout: 40000}); await W(3000);
   Object.assign(f, await page.evaluate((me) => {
@@ -35,7 +38,8 @@ done(fresh);
 
 const SEND = `
 const results = [];
-for (const j of P.jobs) {
+for (const [i, j] of P.jobs.entries()) {
+  await step('답글 ' + (i + 1) + ' 올리기: @' + j.user);
   await page.goto(j.url, {timeout: 40000}); await W(3500);
   const ok = await page.evaluate((user) => {
     const a = [...document.querySelectorAll('main a[href="/' + user + '/"]')].find(x => x.innerText.trim() === user);
@@ -58,7 +62,7 @@ done(results);
 
 export async function scan(h, cfg) {
   const done = Object.keys(log.read(h, id));
-  const found = await run(wrap(SCAN, {done, me: cfg.instagram?.handle || ''}));
+  const found = await run(wrap(SCAN, {done, me: cfg.instagram?.handle || ''}, {role: id, plan: ['인스타 알림 읽기', '새 댓글 읽기']}));
   for (const f of found.filter((x) => x.kind === 'like' || x.kind === 'other' || x.user === cfg.instagram?.handle)) log.mark(h, id, f.commentId, {skip: f.kind === 'like' ? 'like on our reply' : 'own or other'});
   const comments = found.filter((x) => (x.kind === 'comment' || x.kind === 'reply') && x.user !== cfg.instagram?.handle);
   const file = path.join(h, 'out', `comments-${today()}.json`);
@@ -71,7 +75,7 @@ export async function send(h, cfg, jobs) {
   const sig = cfg.replies?.signature ? ' ' + cfg.replies.signature : '';
   const todo = jobs.filter((j) => !log.read(h, id)[j.commentId]).map((j) => ({...j, reply: j.reply.trim() + sig}));
   if (!todo.length) return [];
-  const res = await run(wrap(SEND, {jobs: todo}), {timeoutMs: 60000 * (2 + todo.length)});
+  const res = await run(wrap(SEND, {jobs: todo}, {role: id, plan: todo.map((j, i) => '답글 ' + (i + 1) + ' 올리기: @' + j.user)}), {timeoutMs: 60000 * (2 + todo.length)});
   for (const r of res) if (r.status === 'sent') log.mark(h, id, r.commentId, {user: r.user, url: r.url, reply: r.reply});
   return res;
 }
@@ -88,3 +92,6 @@ export async function sendApproved(h, cfg, item) {
   inbox.setStatus(h, item.id, r?.status === 'sent' ? 'sent' : 'failed', {result: r?.status || 'already-replied'});
   return r || {status: 'already-replied'};
 }
+
+// the browser scripts, for tests on a local page
+export const SCRIPTS = {SCAN, SEND};

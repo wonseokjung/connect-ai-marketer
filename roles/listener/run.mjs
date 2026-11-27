@@ -12,6 +12,7 @@ const out = [];
 async function scroll(n) { for (let i = 0; i < n; i++) { await page.mouse.wheel(0, 2200); await W(1500); } }
 for (const q of P.queries) {
   for (const mode of ['top', 'live']) {
+    await step((mode === 'top' ? 'X 인기 글 읽기: ' : 'X 최신 글 읽기: ') + q);
     await page.goto('https://x.com/search?q=' + encodeURIComponent(q) + '&src=typed_query&f=' + mode, {timeout: 40000}); await W(4000);
     for (let s = 0; s < P.screens; s++) {
       out.push(...await page.evaluate((q) => [...document.querySelectorAll('article[data-testid="tweet"]')].map(a => {
@@ -24,6 +25,7 @@ for (const q of P.queries) {
       await scroll(1);
     }
   }
+  await step('스레드 검색 읽기: ' + q);
   await page.goto('https://www.threads.com/search?q=' + encodeURIComponent(q) + '&serp_type=default', {timeout: 40000}); await W(4000);
   for (let s = 0; s < P.screens; s++) {
     out.push(...await page.evaluate((q) => [...document.querySelectorAll('a[href*="/post/"]')].filter(a => a.querySelector('time')).map(a => {
@@ -38,6 +40,9 @@ done(out);
 `;
 
 const num = (s, k) => { const m = (s || '').match(new RegExp('([\\d,.]+)\\s*' + k)); return m ? +m[1].replace(/,/g, '') : 0; };
+
+// the steps the plan panel shows in CONNECT AI Browser, in the order the search runs
+export const plan = (keywords) => keywords.flatMap((q) => ['X 인기 글 읽기: ' + q, 'X 최신 글 읽기: ' + q, '스레드 검색 읽기: ' + q]);
 
 export function rank(posts, keywords) {
   const seen = new Set();
@@ -69,7 +74,7 @@ export function report(rows, keywords) {
 export async function listen(h, cfg, {keywords, screens} = {}) {
   keywords = keywords || cfg.listen?.keywords || [];
   if (!keywords.length) throw new Error('No keywords. Add listen.keywords to config.json or pass --kw');
-  const raw = await run(wrap(SEARCH, {queries: keywords, screens: screens || cfg.listen?.screens || 3}), {timeoutMs: 120000 * keywords.length});
+  const raw = await run(wrap(SEARCH, {queries: keywords, screens: screens || cfg.listen?.screens || 3}, {role: id, plan: plan(keywords)}), {timeoutMs: 120000 * keywords.length});
   const rows = rank(raw, keywords);
   const slug = keywords[0].replace(/[^\p{L}\p{N}]+/gu, '-').toLowerCase();
   const json = path.join(h, 'out', `listen-${slug}-${today()}.json`);

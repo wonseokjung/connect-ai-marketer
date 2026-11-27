@@ -1,7 +1,7 @@
 # connect-ai-marketer
 
 **무인 AI 자율화 회사의 마케팅팀. 24시간, 일주일 내내 내 로그인된 브라우저에서 일합니다.**
-CONNECT AI LAB · 모두를 위한 AI 교육 · MIT + Commons Clause 공개 코드(무료로 쓰되 판매 금지) · [에고라이트(Ego Lite)](https://lite.ego.app) 위에서 동작
+CONNECT AI LAB · 모두를 위한 AI 교육 · MIT + Commons Clause 공개 코드(무료로 쓰되 판매 금지) · [CONNECT AI Browser](https://github.com/wonseokjung/connect-ai-browser) 또는 [에고라이트(Ego Lite)](https://lite.ego.app) 위에서 동작
 
 ```bash
 npx github:wonseokjung/connect-ai-marketer setup
@@ -13,16 +13,17 @@ npx github:wonseokjung/connect-ai-marketer setup
 
 ## 처음이면 이 순서대로
 
-1. **에고라이트 설치**: [lite.ego.app](https://lite.ego.app)에서 내 컴퓨터(맥 또는 윈도우)용을 받아 열고, 첫 안내를 끝까지 마칩니다.
-   - 맥에서 열리지 않으면: 시스템 설정 > 개인정보 보호 및 보안 > 그래도 열기
-   - 윈도우: 설치 파일을 실행하고, 첫 안내가 끝나면 PowerShell을 새로 엽니다.
-2. **Node.js 설치**: [nodejs.org](https://nodejs.org)에서 LTS를 받아 설치합니다. 터미널(윈도우는 PowerShell)을 새로 열고 `node -v`가 v18 이상이면 됩니다.
+1. **Node.js 설치**: [nodejs.org](https://nodejs.org)에서 LTS를 받아 설치합니다. 터미널(윈도우는 PowerShell)을 새로 열고 `node -v`가 v20 이상이면 됩니다(CONNECT AI Browser는 20 이상, 에고라이트만 쓰면 18 이상).
+2. **팀이 일할 브라우저 설치**, 둘 중 하나:
+   - **CONNECT AI Browser** (우리 브라우저, 먼저 권해요): `npx github:wonseokjung/connect-ai-browser setup`. 팀은 거기서 `marketer` 에이전트로 일하고, 돌릴 때마다 새 공간에서 단계가 화면에 보여요.
+   - **에고라이트**: [lite.ego.app](https://lite.ego.app)에서 받아 열고 첫 안내를 끝까지 마칩니다. 맥에서 열리지 않으면: 시스템 설정 > 개인정보 보호 및 보안 > 그래도 열기. 윈도우: 첫 안내가 끝나면 PowerShell을 새로 엽니다.
+   - 둘 다 있으면 CONNECT AI Browser를 써요. config.json 에 `"browser": "ego"` 를 넣으면 에고라이트를 써요.
 3. **바이브코딩 도구 하나**: Claude Code, ChatGPT Codex, Antigravity(Gemini) 중 쓰는 것 하나면 됩니다. 글은 이 도구가 씁니다.
 4. **설치 한 줄**: 터미널에서 아래를 실행합니다. 바이브코딩 도구에게 실행해 달라고 해도 됩니다.
    ```bash
    npx github:wonseokjung/connect-ai-marketer setup
    ```
-5. **에고라이트에서 로그인**: 팀이 일할 사이트(인스타그램, X, 스레드, 유튜브 스튜디오)에 에고라이트 안에서 로그인해 둡니다. 비밀번호와 2단계 인증은 직접 합니다.
+5. **그 브라우저에서 로그인**: 팀이 일할 사이트(인스타그램, X, 스레드, 유튜브 스튜디오)에 그 브라우저 안에서 로그인해 둡니다. 비밀번호와 2단계 인증은 직접 합니다.
 6. **점검하고 근무 시작**:
    ```bash
    npx github:wonseokjung/connect-ai-marketer doctor
@@ -98,4 +99,4 @@ npx 는 매번 GitHub 에서 킷을 받아 옵니다. 설치해 두려면 `npm i
 MIT + Commons Clause. 읽고, 쓰고, 고치고, 나눠도 되고, 내 사업 홍보에 써도 됩니다. 이 코드를 팔거나, 이 코드로 유료 강의 · 호스팅 · 서비스를 파는 것은 안 됩니다. 자세한 내용은 LICENSE.
 
 ## 준비물
-Node 18 이상, 맥 또는 윈도우, 쓰는 사이트에 로그인된 에고라이트. 에고라이트는 별도 회사가 만든 무료 브라우저이고 약관이 따로 있습니다. NOTICE.md 참고.
+Node 20 이상(에고라이트만 쓰면 18 이상), 맥 또는 윈도우, 쓰는 사이트에 로그인된 CONNECT AI Browser 또는 에고라이트. 에고라이트는 별도 회사가 만든 무료 브라우저이고 약관이 따로 있습니다. NOTICE.md 참고.

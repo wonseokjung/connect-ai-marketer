@@ -6,8 +6,10 @@ import {writeJson, readJson, today} from '../../lib/paths.mjs';
 export const id = 'studio-finisher';
 
 const READ = `
+await step('스튜디오 편집 화면 열기');
 await page.goto('https://studio.youtube.com/video/' + P.videoId + '/edit', {timeout: 60000}); await W(6000);
 const more = await page.$('ytcp-button#toggle-button'); if (more) { await more.click().catch(() => {}); await W(1200); }
+await step('저장된 내용 읽기');
 done(await page.evaluate(() => {
   const t = (sel) => { const e = document.querySelector(sel); return e ? e.innerText.trim() : null; };
   return {
@@ -35,7 +37,7 @@ export function compare(saved, sheet = {}) {
 export async function check(h, cfg, {videoId, sheet}) {
   if (!videoId) throw new Error('Need --video <videoId>');
   const want = typeof sheet === 'string' ? readJson(sheet, {}) : sheet || {};
-  const saved = await run(wrap(READ, {videoId}), {timeoutMs: 120000});
+  const saved = await run(wrap(READ, {videoId}, {role: id, plan: ['스튜디오 편집 화면 열기', '저장된 내용 읽기']}), {timeoutMs: 120000});
   const diffs = compare(saved, want);
   const file = path.join(h, 'out', `studio-${videoId}-${today()}.json`);
   writeJson(file, {videoId, saved, diffs});
@@ -45,11 +47,13 @@ export async function check(h, cfg, {videoId, sheet}) {
 // finish: fill what the sheet asks for (title, description, playlists, tags), press Save, then reload and check.
 // Experimental in v0.1: Studio changes its page often. Run check afterwards; never trust "Changes saved".
 const FILL = `
+await step('스튜디오 편집 화면 열기');
 await page.goto('https://studio.youtube.com/video/' + P.videoId + '/edit', {timeout: 60000}); await W(6000);
 const did = [];
 async function setBox(sel, text) {
   await page.click(sel); await W(300); await page.keyboard.press('ControlOrMeta+a'); await page.keyboard.insertText(text); await W(500);
 }
+await step('제목, 설명, 재생목록, 태그 채우기');
 if (P.sheet.title) { await setBox('#title-textarea #textbox', P.sheet.title); did.push('title'); }
 if (P.sheet.description) { await setBox('#description-textarea #textbox', P.sheet.description); did.push('description'); }
 if ((P.sheet.playlists || []).length) {
@@ -70,6 +74,7 @@ if ((P.sheet.tags || []).length) {
     did.push('tag ' + t);
   }
 }
+await step('저장');
 await page.click('ytcp-button#save'); await W(4000);
 done({did});
 `;
@@ -77,7 +82,10 @@ export async function finish(h, cfg, {videoId, sheet}) {
   if (!videoId) throw new Error('Need --video <videoId>');
   const want = typeof sheet === 'string' ? readJson(sheet, {}) : sheet || {};
   if (!Object.keys(want).length) throw new Error('Need --sheet sheet.json with title, description, playlists or tags');
-  const r = await run(wrap(FILL, {videoId, sheet: want}), {timeoutMs: 180000});
+  const r = await run(wrap(FILL, {videoId, sheet: want}, {role: id, plan: ['스튜디오 편집 화면 열기', '제목, 설명, 재생목록, 태그 채우기', '저장']}), {timeoutMs: 180000});
   const after = await check(h, cfg, {videoId, sheet: want});
   return {did: r.did, diffs: after.diffs, file: after.file};
 }
+
+// the browser scripts, for tests on a local page
+export const SCRIPTS = {READ, FILL};

@@ -1,10 +1,11 @@
 #!/usr/bin/env node
-// connect-ai-marketer: a marketing team of AI employees on Ego Lite. One role = one job; the team lead runs them in order.
+// connect-ai-marketer: a marketing team of AI employees in your own browser (CONNECT AI Browser first, or Ego Lite). One role = one job; the team lead runs them in order.
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawn} from 'node:child_process';
 import {KIT, NAME, RUN, home, config} from '../lib/paths.mjs';
-import {egoInstalled} from '../lib/ego.mjs';
+import {egoInstalled, useConfig, browser} from '../lib/ego.mjs';
+import {choose, cabInstalled, cabStatus, LABEL, INSTALL_CAB} from '../lib/browser.mjs';
 import {xLength, X_LIMIT} from '../lib/xcount.mjs';
 import * as inbox from '../lib/inbox.mjs';
 import {ROLES, roleInfo, runEvent} from '../lib/team.mjs';
@@ -24,15 +25,17 @@ const log = (...a) => console.log(...a);
 const args = Object.fromEntries(VALUED.map((k) => [k, opt(k)]).filter(([, v]) => v));
 const H = () => home(opt('home'));
 
+const readCfg = (f) => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch { return {}; } };
+
 function openFile(f) {
   const c = process.platform === 'darwin' ? ['open', [f]] : process.platform === 'win32' ? ['cmd', ['/c', 'start', '', f]] : ['xdg-open', [f]];
   spawn(c[0], c[1], {detached: true, stdio: 'ignore'}).unref();
 }
 
-const HELP = `${NAME}: the marketing team of your unmanned AI company, on duty 24/7 in Ego Lite.
+const HELP = `${NAME}: the marketing team of your unmanned AI company, on duty 24/7 in your own browser.
 
   setup                      make your work folder + config, install the skill for your agents
-  doctor [--json]            check Node, Ego Lite, the skill, config and team plan; prints the fix for each problem
+  doctor [--json]            check Node, the browser, the skill, config and team plan; prints the fix for each problem
   roles                      list the AI teammates and what each one does
   team <event>               run an event from team.json (before-upload, new-video, daily)
                              new-video takes --video <id> --sheet <sheet.json> --post <post.json>
@@ -52,6 +55,8 @@ const HELP = `${NAME}: the marketing team of your unmanned AI company, on duty 2
   xcount "<text>"            X weighted length (Korean, Japanese, Chinese count 2, links 23)
   skill [--agent claude|codex|antigravity] [--remove]
 
+  Browser: CONNECT AI Browser (cab) when it is installed, else Ego Lite. Pick one: "browser": "cab" | "ego" in config.json,
+  or CONNECT_AI_BROWSER=cab|ego. In CONNECT AI Browser the team works as the agent "marketer", one new space per run.
   Work folder: ~/.connect-ai-marketer (or --home, or CONNECT_AI_MARKETER_HOME). Nothing is kept inside the kit.
   Every post and reply waits in the inbox unless you list that role in config.autoSend.`;
 
@@ -73,24 +78,31 @@ async function main() {
     const t = path.join(h, 'team.json');
     if (!fs.existsSync(t)) { fs.copyFileSync(path.join(KIT, 'team.json'), t); log(`  team plan: ${t} (change the order to make it your team)`); }
     log('  skill:'); installSkill({agent: opt('agent', 'all'), dir: opt('dir'), dryRun: flag('dry-run')});
-    if (egoInstalled()) {
-      log('  Ego Lite: found. Sign in to Instagram, X, Threads and YouTube Studio inside Ego Lite once.');
+    const next = () => {
       log('\n  ' + G('Your team is hired.') + ' Next:');
       log('    1. edit ' + c + ' (your handles and keywords)');
       log('    2. ' + RUN + ' doctor');
       log('    3. ' + RUN + ' watch     ' + D('# on duty 24/7') + '\n');
-      return;
+    };
+    const pick = choose({config: readCfg(c), egoInstalled});
+    if (pick.browser === 'cab' && cabInstalled()) {
+      log(`  ${LABEL.cab}: found${cabStatus().running ? ', running' : ' (start it: cab start)'}. Sign in to Instagram, X, Threads and YouTube Studio in its window once.`);
+      log(D('  The team works there as the agent "marketer", in a gold-framed space of its own. You watch each step in the plan panel.'));
+      return next();
     }
-    log('  Ego Lite: not found. Opening the download page: https://lite.ego.app');
-    log('  Install it, open it, finish its first-run steps, then sign in to your sites inside it. Waiting here (Ctrl+C to stop)...');
-    if (!flag('no-open')) openFile('https://lite.ego.app');
-    const PATHS = [path.join(process.env.HOME || process.env.USERPROFILE || '', '.local', 'bin')];
+    if (pick.browser === 'ego' && egoInstalled()) {
+      log('  Ego Lite: found. Sign in to Instagram, X, Threads and YouTube Studio inside Ego Lite once.');
+      log(D(`  Our own browser, ${LABEL.cab}, comes first when it is installed: ${INSTALL_CAB}`));
+      return next();
+    }
+    log(`  Browser: not found. Install ${LABEL.cab} (one line):`);
+    log('    ' + INSTALL_CAB);
+    log('  Then sign in to your sites in its window. Waiting here (Ctrl+C to stop)...');
     for (let i = 0; i < 180; i++) {
-      process.env.PATH = PATHS.join(path.delimiter) + path.delimiter + process.env.PATH;
-      if (egoInstalled()) { log('  Ego Lite: ready. Your marketing team can start: ' + RUN + ' doctor'); return; }
+      if (cabInstalled()) { log(`  ${LABEL.cab}: ready. Your marketing team can start: ` + RUN + ' doctor'); return; }
       await new Promise((r) => setTimeout(r, 10000));
     }
-    log('  Still no ego-browser command. Open a new terminal after Ego Lite finishes its first-run steps, then run setup again.');
+    log(`  Still no ${LABEL.cab}. Run the line above in a new terminal, then run setup again. Ego Lite works too ("browser": "ego").`);
     return;
   }
   if (cmd === 'doctor') {
@@ -104,13 +116,14 @@ async function main() {
   if (cmd === 'reject') { const r = inbox.setStatus(h, pos[1], 'rejected'); return log(`  ${r.id} rejected`); }
   if (cmd === 'desk') { const f = desk(h); log('  ' + f); if (!flag('no-open')) openFile(f); return; }
   const cfg = config(h);
+  useConfig(cfg);
   if (cmd === 'approve') {
     const item = inbox.list(h).find((x) => x.id === pos[1]);
     if (!item) throw new Error('No approval ' + pos[1] + '. See: inbox');
     const fn = ROLES[item.role]?.approve;
     if (!fn) throw new Error('Role ' + item.role + ' has no approve step');
     const r = await fn(h, cfg, item);
-    return log(`  ${item.id}: ${r.status}${r.status === 'typed-waiting-for-you' ? ' (the post is typed in Ego Lite; press Post yourself)' : ''}`);
+    return log(`  ${item.id}: ${r.status}${r.status === 'typed-waiting-for-you' ? ` (the post is typed in ${LABEL[browser(cfg)]}; press Post yourself)` : ''}`);
   }
   if (cmd === 'watch') { return flag('once') ? once(h, cfg, log) : watch(h, cfg, {every: +(opt('every', 10)) || 10, log}); }
   if (cmd === 'team') { const r = await runEvent(h, cfg, pos[1], args, log); return log('  log: ' + r.file); }

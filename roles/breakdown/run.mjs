@@ -6,6 +6,7 @@ import {writeJson, today} from '../../lib/paths.mjs';
 
 export const id = 'breakdown';
 const GRAB = `
+await step('글 열기');
 await page.goto(P.url, {timeout: 45000}); await W(5000);
 const info = await page.evaluate(() => {
   const art = document.querySelector('article') || document.querySelector('main') || document.body;
@@ -13,6 +14,7 @@ const info = await page.evaluate(() => {
   return {title: document.title, text: (art.innerText || '').slice(0, 3000), stats: g ? g.getAttribute('aria-label') || '' : '', hasVideo: !!document.querySelector('video')};
 });
 const frames = [];
+await step(info.hasVideo ? '첫 장면 저장' : '화면 저장');
 if (info.hasVideo) {
   await page.evaluate(() => { const v = document.querySelector('video'); v.muted = true; v.pause(); });
   for (const t of P.times) {
@@ -30,7 +32,7 @@ export async function grab(h, cfg, {url} = {}) {
   const base = path.join(h, 'out', `breakdown-${today()}`);
   let n = 1; while (fs.existsSync(`${base}-${n}`)) n++;
   const dir = `${base}-${n}`; fs.mkdirSync(dir, {recursive: true});
-  const r = await run(wrap(GRAB, {url, dir, times: [0, 1, 2, 3, 5, 8]}), {timeoutMs: 120000});
+  const r = await run(wrap(GRAB, {url, dir, times: [0, 1, 2, 3, 5, 8]}, {role: id, plan: ['글 열기', '첫 장면 저장']}), {timeoutMs: 120000});
   writeJson(path.join(dir, 'post.json'), {url, ...r});
   fs.writeFileSync(path.join(dir, 'ask-your-agent.md'), `Look at post.json and the frames in this folder (${r.frames.length}).\nWrite down: what happens in the first 3 seconds, how it is structured, the words on screen, and what it asks the viewer to do.\nThen suggest how to use the same structure for my topic: <your topic>.\n`);
   return {dir, frames: r.frames.length, video: r.hasVideo};

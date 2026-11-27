@@ -10,9 +10,11 @@ import {count, ageDays, unset} from '../../lib/num.mjs';
 
 export const id = 'analyst';
 const READ_X = `
+await step('X 프로필 열기');
 await page.goto('https://x.com/' + P.handle, {timeout: 40000}); await W(4500);
 const followersText = await page.evaluate(() => { const a = document.querySelector('a[href$="/verified_followers"], a[href$="/followers"]'); return a ? a.innerText : ''; });
 const posts = new Map();
+await step('최근 글 숫자 읽기');
 for (let s = 0; s < P.screens; s++) {
   for (const p of await page.evaluate((h) => [...document.querySelectorAll('article[data-testid="tweet"]')].map(a => {
     const link = [...a.querySelectorAll('a[href*="/status/"]')].find(x => x.querySelector('time'));
@@ -26,7 +28,8 @@ done({followersText, posts: [...posts.values()]});
 `;
 const REPLIES = `
 const out = [];
-for (const u of P.urls) {
+for (const [i, u] of P.urls.entries()) {
+  await step('반응 좋은 글 ' + (i + 1) + ' 답글 읽기');
   await page.goto(u, {timeout: 40000}); await W(4000);
   out.push({url: u, replies: await page.evaluate(() => [...document.querySelectorAll('article[data-testid="tweet"]')].slice(1, 16).map(a => ({
     user: ((a.querySelector('[data-testid="User-Name"]') || {}).innerText || '').split('\\n')[0], text: (a.querySelector('[data-testid="tweetText"]') || {}).innerText || ''})).filter(r => r.text))});
@@ -34,7 +37,9 @@ for (const u of P.urls) {
 done(out);
 `;
 const READ_YT = `
+await step('유튜브 채널 동영상 탭 열기');
 await page.goto('https://www.youtube.com/' + P.handle + '/videos', {timeout: 40000}); await W(4500);
+await step('최근 영상 숫자 읽기');
 for (let s = 0; s < P.screens; s++) { await page.mouse.move(700, 500); await page.mouse.wheel(0, 2400); await W(1200); }
 done(await page.evaluate(() => ({
   header: ((document.querySelector('#page-header') || {}).innerText || '').slice(0, 600),
@@ -116,15 +121,15 @@ function youtubeHandle(cfg) {
 const xHandle = (cfg, a = {}) => { const v = (a.handle || cfg.x?.handle || '').replace(/^@/, ''); return unset(v) ? '' : v; };
 
 async function readX(handle, screens) {
-  const got = await run(wrap(READ_X, {handle, screens: screens || 4}), {timeoutMs: 180000});
+  const got = await run(wrap(READ_X, {handle, screens: screens || 4}, {role: id, plan: ['X 프로필 열기', '최근 글 숫자 읽기']}), {timeoutMs: 180000});
   const posts = got.posts.map(numbers);
   const best = [...posts].sort((a, b) => (b.likes * 10 + b.replies * 20 + b.views / 100) - (a.likes * 10 + a.replies * 20 + a.views / 100)).slice(0, 5);
-  const replies = best.length ? await run(wrap(REPLIES, {urls: best.map((b) => b.url)}), {timeoutMs: 60000 * (1 + best.length)}) : [];
+  const replies = best.length ? await run(wrap(REPLIES, {urls: best.map((b) => b.url)}, {role: id, plan: best.map((b, i) => '반응 좋은 글 ' + (i + 1) + ' 답글 읽기')}), {timeoutMs: 60000 * (1 + best.length)}) : [];
   const sum = (k) => posts.reduce((s, p) => s + p[k], 0);
   return {handle, followers: count(got.followersText), followersText: got.followersText, posts: posts.length, totals: {views: sum('views'), likes: sum('likes'), replies: sum('replies')}, best, replies};
 }
 async function readYouTube(handle, screens) {
-  const got = await run(wrap(READ_YT, {handle, screens: screens || 1}), {timeoutMs: 120000});
+  const got = await run(wrap(READ_YT, {handle, screens: screens || 1}, {role: id, plan: ['유튜브 채널 동영상 탭 열기', '최근 영상 숫자 읽기']}), {timeoutMs: 120000});
   const head = ytHeader(got.header);
   const vids = got.items.map(ytItem).slice(0, 30);
   return {handle, ...head, latest: vids, totals: {views: vids.reduce((s, v) => s + v.views, 0)}, best: [...vids].sort((a, b) => b.views - a.views).slice(0, 5)};
