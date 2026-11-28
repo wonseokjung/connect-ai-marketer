@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// connect-ai-marketer: a marketing team of AI employees in your own browser (CONNECT AI Browser first, or Ego Lite). One role = one job; the team lead runs them in order.
+// connect-ai-marketer: a marketing team of AI employees in your own browser (ELDO first, or Ego Lite). One role = one job; the team lead runs them in order.
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawn} from 'node:child_process';
@@ -55,8 +55,8 @@ const HELP = `${NAME}: the marketing team of your unmanned AI company, on duty 2
   xcount "<text>"            X weighted length (Korean, Japanese, Chinese count 2, links 23)
   skill [--agent claude|codex|antigravity] [--remove]
 
-  Browser: CONNECT AI Browser (cab) when it is installed, else Ego Lite. Pick one: "browser": "cab" | "ego" in config.json,
-  or CONNECT_AI_BROWSER=cab|ego. In CONNECT AI Browser the team works as the agent "marketer", one new space per run.
+  Browser: ELDO (cab) when it is installed, else Ego Lite. Pick one: "browser": "cab" | "ego" in config.json,
+  or CONNECT_AI_BROWSER=cab|ego. In ELDO the team works as the agent "marketer", one new space per run.
   Work folder: ~/.connect-ai-marketer (or --home, or CONNECT_AI_MARKETER_HOME). Nothing is kept inside the kit.
   Every post and reply waits in the inbox unless you list that role in config.autoSend.`;
 

@@ -41,9 +41,9 @@ await t('wrap embeds params as JSON and the space name (Ego Lite: one Space as b
   const s = wrap('done(P.a)', {a: "it's"}, {browser: 'ego'});
   assert.ok(s.includes('"a":"it\'s"')); assert.ok(s.includes('taskSpace("connect-ai-marketer")'));
 });
-await t('wrap for CONNECT AI Browser: a new space named after the role, the plan, our own tabs closed, typed work kept for you', () => {
+await t('wrap for ELDO: a new space named after the role, the plan, our own tabs closed, typed work kept for you', () => {
   const s = wrap('await step("X 인기 글 읽기: a"); done(1)', {a: 1}, {browser: 'cab', role: 'listener', plan: ['X 인기 글 읽기: a']});
-  assert.ok(s.startsWith('// connect-ai-marketer on CONNECT AI Browser'));
+  assert.ok(s.startsWith('// connect-ai-marketer on ELDO'));
   assert.ok(/newTaskSpace\("리스닝 담당 \d\d:\d\d"\)/.test(s)); assert.ok(!s.includes('taskSpace("connect-ai-marketer")'));
   assert.ok(s.includes('await task.plan(["X 인기 글 읽기: a"])') && s.includes('task.done()') && s.includes("task.finish({keep: []})"));
   assert.ok(wrap('done(1)', {}, {browser: 'cab', role: 'form-filler', keep: true}).includes("task.finish({keep: ['p1']})"));
@@ -150,14 +150,14 @@ await t('doctor: old Node, PowerShell policy, Ego Lite not on PATH yet, each wit
   assert.ok(render(list).includes('KO  '));
   for (const c of list) if (c.fix) assert.ok(!/[「」—]/.test(c.fix.ko), 'no corner brackets or em dash in Korean: ' + c.label);
 });
-await t('doctor: no browser yet (CONNECT AI Browser first, Ego Lite when asked), skill missing for Claude, example config values', () => {
+await t('doctor: no browser yet (ELDO first, Ego Lite when asked), skill missing for Claude, example config values', () => {
   const fh = fs.mkdtempSync(path.join(os.tmpdir(), 'cam-home-'));
   fs.mkdirSync(path.join(fh, '.claude'), {recursive: true});
   const wh = home(fs.mkdtempSync(path.join(os.tmpdir(), 'cam-w-'))); fs.copyFileSync(new URL('../config.example.json', import.meta.url), path.join(wh, 'config.json'));
   const list = checks({h: wh, home: fh, env: {}, platform: 'darwin', node: '22.1.0', probe: fake({egoVersion: () => ''})});
   const by = (l) => list.find((c) => c.label === l);
   assert.equal(by('Node.js').status, 'ok');
-  assert.ok(by('CONNECT AI Browser (cab)').fix.en.includes('connect-ai-browser setup') && by('CONNECT AI Browser (cab)').fix.ko.includes('직접 로그인'));
+  assert.ok(by('ELDO (cab)').fix.en.includes('eldobrowser.com') && by('ELDO (cab)').fix.ko.includes('직접 로그인'));
   const egoOnly = checks({h: wh, home: fh, env: {CONNECT_AI_BROWSER: 'ego'}, platform: 'darwin', node: '22.1.0', probe: fake({egoVersion: () => ''})});
   const e = egoOnly.find((c) => c.label === 'Ego Lite (ego-browser)');
   assert.ok(e.fix.en.includes('https://lite.ego.app') && e.fix.ko.includes('그래도 열기'));
@@ -177,10 +177,10 @@ await t('doctor: all good, and Ego Lite installed but closed', () => {
   const cab = {how: 'cab on PATH', path: '/usr/local/bin/cab', running: true, mode: 'ext', alive: ''};
   const onCab = checks({h: wh, home: fh, env: {}, platform: 'darwin', node: '22.1.0', probe: fake({cab: () => cab})});
   assert.ok(onCab.every((c) => c.status !== 'fail'), JSON.stringify(onCab.filter((c) => c.status === 'fail')));
-  assert.ok(onCab.find((c) => c.label === 'CONNECT AI Browser running').detail.includes('"marketer"'));
+  assert.ok(onCab.find((c) => c.label === 'ELDO running').detail.includes('"marketer"'));
   assert.equal(onCab.find((c) => c.label === 'Ego Lite (ego-browser)').status, 'note');
   const stopped = checks({h: wh, home: fh, env: {}, platform: 'darwin', node: '22.1.0', probe: fake({cab: () => ({...cab, running: false, alive: 'not running'})})});
-  assert.ok(stopped.find((c) => c.label === 'CONNECT AI Browser running').fix.en.includes('cab start'));
+  assert.ok(stopped.find((c) => c.label === 'ELDO running').fix.en.includes('cab start'));
   const asked = checks({h: wh, home: fh, env: {CONNECT_AI_BROWSER: 'ego'}, platform: 'darwin', node: '22.1.0', probe: fake({cab: () => cab})});
   assert.equal(asked.find((c) => c.label === 'Ego Lite running').status, 'ok');
 });
@@ -188,9 +188,10 @@ await t('ego-browser on Windows: .exe runs directly, .cmd goes through the shell
   assert.deepEqual(egoCommand('darwin'), {file: 'ego-browser', shell: false});
   assert.deepEqual(egoCommand('win32', () => 'C:\\Users\\a\\.local\\bin\\ego-browser\r\nC:\\Users\\a\\.local\\bin\\ego-browser.cmd\r\n'), {file: '"C:\\Users\\a\\.local\\bin\\ego-browser.cmd"', shell: true});
 });
-await t('browser choice: CONNECT_AI_BROWSER, then config, then CONNECT AI Browser when installed, else Ego Lite; cab runs as the agent "marketer"', async () => {
+await t('browser choice: CONNECT_AI_BROWSER, then config, then ELDO when installed, else Ego Lite; cab runs as the agent "marketer"', async () => {
   const B = await import('../lib/browser.mjs');
   assert.equal(B.choose({env: {CONNECT_AI_BROWSER: 'ego'}, config: {browser: 'cab'}}).browser, 'ego');
+  assert.equal(B.choose({env: {ELDO_BROWSER: 'eldo'}, config: {browser: 'ego'}}).browser, 'cab');
   assert.equal(B.choose({env: {}, config: {browser: 'ego'}}).browser, 'ego');
   const fakeDir = fs.mkdtempSync(path.join(os.tmpdir(), 'cam-cab-'));
   const fakeCab = path.join(fakeDir, 'cab.mjs');
@@ -201,7 +202,7 @@ await t('browser choice: CONNECT_AI_BROWSER, then config, then CONNECT AI Browse
   const {run: runIt} = await import('../lib/ego.mjs');
   const r = await runIt(wrap('done(1)', {}, {browser: 'cab', role: 'listener'}));
   delete process.env.CONNECT_AI_CAB;
-  assert.deepEqual(r, {agent: 'marketer', argv: ['nodejs'], first: '// connect-ai-marketer on CONNECT AI Browser'});
-  assert.ok(B.cabError('[cab] CAB_NOT_RUNNING: CONNECT AI Browser is not running').includes('cab start'));
+  assert.deepEqual(r, {agent: 'marketer', argv: ['nodejs'], first: '// connect-ai-marketer on ELDO'});
+  assert.ok(B.cabError('[cab] CAB_NOT_RUNNING: ELDO is not running').includes('cab start'));
 });
 console.log(`\n${n} passed`);

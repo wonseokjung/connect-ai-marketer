@@ -41,7 +41,7 @@ done(out);
 
 const num = (s, k) => { const m = (s || '').match(new RegExp('([\\d,.]+)\\s*' + k)); return m ? +m[1].replace(/,/g, '') : 0; };
 
-// the steps the plan panel shows in CONNECT AI Browser, in the order the search runs
+// the steps the plan panel shows in ELDO, in the order the search runs
 export const plan = (keywords) => keywords.flatMap((q) => ['X 인기 글 읽기: ' + q, 'X 최신 글 읽기: ' + q, '스레드 검색 읽기: ' + q]);
 
 export function rank(posts, keywords) {

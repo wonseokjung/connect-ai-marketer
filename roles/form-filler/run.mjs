@@ -54,7 +54,7 @@ export async function fill(h, cfg, {url, file} = {}) {
   const shot = path.join(h, 'out', `form-${today()}-${n}.png`);
   const r = await run(wrap(FILL, {url, answers, shot}, {role: id, plan: ['신청서 열기', '답 채우기', '제출 앞에서 멈추고 화면 찍기'], keep: true}), {timeoutMs: 120000});
   writeJson(shot.replace(/\.png$/, '.json'), {url, ...r});
-  return {...r, screenshot: shot, next: browser(cfg) === 'cab' ? 'The form stays open for you in CONNECT AI Browser. Check it and press Submit yourself.' : 'Check the form in Ego Lite and press Submit yourself.'};
+  return {...r, screenshot: shot, next: browser(cfg) === 'cab' ? 'The form stays open for you in ELDO. Check it and press Submit yourself.' : 'Check the form in Ego Lite and press Submit yourself.'};
 }
 
 // the browser scripts, for tests on a local page

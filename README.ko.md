@@ -1,7 +1,7 @@
 # connect-ai-marketer
 
 **무인 AI 자율화 회사의 마케팅팀. 24시간, 일주일 내내 내 로그인된 브라우저에서 일합니다.**
-CONNECT AI LAB · 모두를 위한 AI 교육 · MIT + Commons Clause 공개 코드(무료로 쓰되 판매 금지) · [CONNECT AI Browser](https://github.com/wonseokjung/connect-ai-browser) 또는 [에고라이트(Ego Lite)](https://lite.ego.app) 위에서 동작
+CONNECT AI LAB · 모두를 위한 AI 교육 · MIT + Commons Clause 공개 코드(무료로 쓰되 판매 금지) · [ELDO](https://eldobrowser.com) 또는 [에고라이트(Ego Lite)](https://lite.ego.app) 위에서 동작
 
 ```bash
 npx github:wonseokjung/connect-ai-marketer setup
@@ -21,11 +21,11 @@ npx github:wonseokjung/connect-ai-marketer setup
 
 ## 처음이면 이 순서대로
 
-1. **Node.js 설치**: [nodejs.org](https://nodejs.org)에서 LTS를 받아 설치합니다. 터미널(윈도우는 PowerShell)을 새로 열고 `node -v`가 v20 이상이면 됩니다(CONNECT AI Browser는 20 이상, 에고라이트만 쓰면 18 이상).
+1. **Node.js 설치**: [nodejs.org](https://nodejs.org)에서 LTS를 받아 설치합니다. 터미널(윈도우는 PowerShell)을 새로 열고 `node -v`가 v20 이상이면 됩니다(ELDO는 20 이상, 에고라이트만 쓰면 18 이상).
 2. **팀이 일할 브라우저 설치**, 둘 중 하나:
-   - **CONNECT AI Browser** (우리 브라우저, 먼저 권해요): `npx github:wonseokjung/connect-ai-browser setup`. 팀은 거기서 `marketer` 에이전트로 일하고, 돌릴 때마다 새 공간에서 단계가 화면에 보여요.
+   - **ELDO** (우리 브라우저, 먼저 권해요): [eldobrowser.com](https://eldobrowser.com) (free macOS / Windows). 팀은 거기서 `marketer` 에이전트로 일하고, 돌릴 때마다 새 공간에서 단계가 화면에 보여요.
    - **에고라이트**: [lite.ego.app](https://lite.ego.app)에서 받아 열고 첫 안내를 끝까지 마칩니다. 맥에서 열리지 않으면: 시스템 설정 > 개인정보 보호 및 보안 > 그래도 열기. 윈도우: 첫 안내가 끝나면 PowerShell을 새로 엽니다.
-   - 둘 다 있으면 CONNECT AI Browser를 써요. config.json 에 `"browser": "ego"` 를 넣으면 에고라이트를 써요.
+   - 둘 다 있으면 ELDO를 써요. config.json 에 `"browser": "ego"` 를 넣으면 에고라이트를 써요.
 3. **바이브코딩 도구 하나**: Claude Code, ChatGPT Codex, Antigravity(Gemini) 중 쓰는 것 하나면 됩니다. 글은 이 도구가 씁니다.
 4. **설치 한 줄**: 터미널에서 아래를 실행합니다. 바이브코딩 도구에게 실행해 달라고 해도 됩니다.
    ```bash
@@ -107,18 +107,28 @@ npx 는 매번 GitHub 에서 킷을 받아 옵니다. 설치해 두려면 `npm i
 MIT + Commons Clause. 읽고, 쓰고, 고치고, 나눠도 되고, 내 사업 홍보에 써도 됩니다. 이 코드를 팔거나, 이 코드로 유료 강의 · 호스팅 · 서비스를 파는 것은 안 됩니다. 자세한 내용은 LICENSE.
 
 ## 준비물
-Node 20 이상(에고라이트만 쓰면 18 이상), 맥 또는 윈도우, 쓰는 사이트에 로그인된 CONNECT AI Browser 또는 에고라이트. 에고라이트는 별도 회사가 만든 무료 브라우저이고 약관이 따로 있습니다. NOTICE.md 참고.
+Node 20 이상(에고라이트만 쓰면 18 이상), 맥 또는 윈도우, 쓰는 사이트에 로그인된 ELDO 또는 에고라이트. 에고라이트는 별도 회사가 만든 무료 브라우저이고 약관이 따로 있습니다. NOTICE.md 참고.
 
 <!-- team:start -->
-## CONNECT AI LAB의 AI 직원들
+## CONNECT AI LAB의 AI 직원들 (14명) · ELDO 브라우저
 
-AI 직원을 하나씩 오픈소스로 만들고 있어요. 필요한 직원부터 데려가 쓰세요.
+AI 직원을 오픈소스로 하나씩 만들고 있어요. 필요한 직원부터 데려가 쓰거나, [ELDO 브라우저](https://eldobrowser.com)와 [`wonseokjung/eldo`](https://github.com/wonseokjung/eldo)로 14명 전체를 한 번에 설치할 수 있어요 (`npx github:wonseokjung/eldo`).
 
 <table>
-<tr><td width="34%" valign="top"><b>사업 해부 직원</b><br><a href="https://github.com/wonseokjung/reversebusiness"><code>reversebusiness</code></a></td><td valign="top">사업 웹사이트 주소 하나 주면 그 사업이 어떻게 돈 버는지 읽어 줘요.</td></tr>
-<tr><td width="34%" valign="top"><b>영상 편집 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-video-motion"><code>connect-ai-video-motion</code></a></td><td valign="top">내 영상을 주면 몸을 피해서 빈자리에 모션그래픽을 넣어 줘요.</td></tr>
-<tr><td width="34%" valign="top"><b>모션그래픽 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-motion"><code>connect-ai-motion</code></a></td><td valign="top">글 몇 줄 주면 모션그래픽 영상을 만들어 줘요. 찍은 영상은 없어도 돼요.</td></tr>
-<tr><td width="34%" valign="top"><b>마케팅팀</b> · <b>지금 보는 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-marketer"><code>connect-ai-marketer</code></a></td><td valign="top">내 브라우저에서 24시간 댓글, 리스닝, 업로드를 맡아요.</td></tr>
-<tr><td width="34%" valign="top"><b>글쓰기 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-writer"><code>connect-ai-writer</code></a></td><td valign="top">영상 하나 주면 플랫폼마다 내 말투로 글을 쓰고 사진까지 같이 만들어 줘요.</td></tr>
+<tr><td width="34%" valign="top"><b>ELDO 브라우저 · 통합 허브</b><br><a href="https://eldobrowser.com"><code>eldobrowser.com</code></a> · <a href="https://github.com/wonseokjung/eldo"><code>eldo</code></a></td><td valign="top">AI 직원이 일하는 무료 브라우저(macOS 공증 · Windows). 로그인은 한 번, 실행은 AI 직원이 맡고 결제와 인증은 대표님께 넘겨요.</td></tr>
+<tr><td width="34%" valign="top"><b>AI 자율 회사 본사</b><br><a href="https://github.com/wonseokjung/connect-ai-autonomous-company"><code>connect-ai-autonomous-company</code></a></td><td valign="top">삶과 AI 직원, 오토메이션, ELDO 브라우저를 하나로 연결하는 로컬 AI 자율 회사 OS예요.</td></tr>
+<tr><td width="34%" valign="top"><b>AI 개발 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-developer"><code>connect-ai-developer</code></a></td><td valign="top">한 문장 주면 가입, DB, 테스트 결제까지 붙은 서비스를 만들고 GitHub와 배포까지 연결해요.</td></tr>
+<tr><td width="34%" valign="top"><b>AI 세무회계 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-accountant"><code>connect-ai-accountant</code></a></td><td valign="top">홈택스, 카드, 통장, 메일 영수증을 모아 월 비용표와 세무사님께 드릴 폴더를 만들어요.</td></tr>
+<tr><td width="34%" valign="top"><b>AI 마케터 직원</b> · <b>지금 보는 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-marketer"><code>connect-ai-marketer</code></a></td><td valign="top">내 브라우저에서 24시간 댓글, 리스닝, 유튜브 업로드 마무리를 맡는 8인 마케팅팀이에요.</td></tr>
+<tr><td width="34%" valign="top"><b>AI 글쓰기 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-writer"><code>connect-ai-writer</code></a></td><td valign="top">영상이나 주제 하나로 리서치하고 플랫폼마다 내 말투로 글과 그림 초안을 써 줘요.</td></tr>
+<tr><td width="34%" valign="top"><b>AI 사업 분석 직원</b><br><a href="https://github.com/wonseokjung/reversebusiness"><code>reversebusiness</code></a></td><td valign="top">사업 웹사이트 주소 하나 주면 수익 구조를 6칸으로 해부하고 내 버전을 기획해요.</td></tr>
+<tr><td width="34%" valign="top"><b>AI 이미지 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-image"><code>connect-ai-image</code></a></td><td valign="top">로컬 ComfyUI + FLUX 무료 우선, 브라우저 Gemini/ChatGPT로 플랫폼별 이미지 시리즈를 그려요.</td></tr>
+<tr><td width="34%" valign="top"><b>AI 발표 자료 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-slides-web"><code>connect-ai-slides-web</code></a></td><td valign="top">몇 줄 메모나 기존 PPT를 3D 모션 웹 슬라이드와 실제 파워포인트(.pptx) 파일로 만들어요.</td></tr>
+<tr><td width="34%" valign="top"><b>AI 3D 웹 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-three"><code>connect-ai-three</code></a></td><td valign="top">말 한마디로 Three.js 인터랙티브 3D 웹페이지와 프레임 정확한 영상까지 같이 만들어요.</td></tr>
+<tr><td width="34%" valign="top"><b>AI 모션그래픽 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-motion"><code>connect-ai-motion</code></a></td><td valign="top">글 몇 줄 주면 촬영 없이 83종 씬으로 16:9와 9:16 모션그래픽 영상을 만들어 줘요.</td></tr>
+<tr><td width="34%" valign="top"><b>AI 영상 편집 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-video-motion"><code>connect-ai-video-motion</code></a></td><td valign="top">내 영상을 주면 얼굴과 손을 피해서 빈자리에 80종 모션그래픽을 알아서 넣어 줘요.</td></tr>
+<tr><td width="34%" valign="top"><b>AI XR 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-xr"><code>connect-ai-xr</code></a></td><td valign="top">한 문장 주면 메타 퀘스트에서 패스스루 AR과 VR로 열리는 WebXR 앱을 만들어 줘요.</td></tr>
+<tr><td width="34%" valign="top"><b>AI 상품 사진 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-product-photo"><code>connect-ai-product-photo</code></a></td><td valign="top">폰 상품 사진 폴더를 넣으면 원본 라벨은 선명하게 살린 플랫폼별 상품컷이 나와요.</td></tr>
+<tr><td width="34%" valign="top"><b>AI 번역 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-localizer"><code>connect-ai-localizer</code></a></td><td valign="top">한국어 글과 영상 자막을 내 말투 그대로 영어, 일본어, 스페인어 네이티브 글로 다시 써요.</td></tr>
 </table>
 <!-- team:end -->
