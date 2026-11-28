@@ -9,6 +9,14 @@ npx github:wonseokjung/connect-ai-marketer setup
 
 짧은 명령 `npx connect-ai-marketer` 는 npm 배포와 함께 열립니다. 그 전까지는 위의 `github:` 한 줄을 그대로 쓰세요.
 
+<p align="center">
+  <img src="skill/assets/mascot/greet.gif" width="68" alt="조선 보부상 마케터 · 인사">&nbsp;
+  <img src="skill/assets/mascot/scan.gif" width="68" alt="조선 보부상 마케터 · 탐색">&nbsp;
+  <img src="skill/assets/mascot/draft.gif" width="68" alt="조선 보부상 마케터 · 초안">&nbsp;
+  <img src="skill/assets/mascot/done.gif" width="68" alt="조선 보부상 마케터 · 완료"><br>
+  <sub><b>조선 보부상 · 마케터</b> (CONNECT AI HQ PixelCrew) — 대화할 때 인사·댓글/채널 탐색·초안 작성·임시저장 완료 상태에 맞춰 작게 움직이며 표정이 바뀌는 픽셀 캐릭터예요.</sub>
+</p>
+
 [![connect-ai-marketer](docs/hero.webp)](docs/index.html)
 
 ## 처음이면 이 순서대로
@@ -100,3 +108,17 @@ MIT + Commons Clause. 읽고, 쓰고, 고치고, 나눠도 되고, 내 사업 �
 
 ## 준비물
 Node 20 이상(에고라이트만 쓰면 18 이상), 맥 또는 윈도우, 쓰는 사이트에 로그인된 CONNECT AI Browser 또는 에고라이트. 에고라이트는 별도 회사가 만든 무료 브라우저이고 약관이 따로 있습니다. NOTICE.md 참고.
+
+<!-- team:start -->
+## CONNECT AI LAB의 AI 직원들
+
+AI 직원을 하나씩 오픈소스로 만들고 있어요. 필요한 직원부터 데려가 쓰세요.
+
+<table>
+<tr><td width="34%" valign="top"><b>사업 해부 직원</b><br><a href="https://github.com/wonseokjung/reversebusiness"><code>reversebusiness</code></a></td><td valign="top">사업 웹사이트 주소 하나 주면 그 사업이 어떻게 돈 버는지 읽어 줘요.</td></tr>
+<tr><td width="34%" valign="top"><b>영상 편집 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-video-motion"><code>connect-ai-video-motion</code></a></td><td valign="top">내 영상을 주면 몸을 피해서 빈자리에 모션그래픽을 넣어 줘요.</td></tr>
+<tr><td width="34%" valign="top"><b>모션그래픽 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-motion"><code>connect-ai-motion</code></a></td><td valign="top">글 몇 줄 주면 모션그래픽 영상을 만들어 줘요. 찍은 영상은 없어도 돼요.</td></tr>
+<tr><td width="34%" valign="top"><b>마케팅팀</b> · <b>지금 보는 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-marketer"><code>connect-ai-marketer</code></a></td><td valign="top">내 브라우저에서 24시간 댓글, 리스닝, 업로드를 맡아요.</td></tr>
+<tr><td width="34%" valign="top"><b>글쓰기 직원</b><br><a href="https://github.com/wonseokjung/connect-ai-writer"><code>connect-ai-writer</code></a></td><td valign="top">영상 하나 주면 플랫폼마다 내 말투로 글을 쓰고 사진까지 같이 만들어 줘요.</td></tr>
+</table>
+<!-- team:end -->

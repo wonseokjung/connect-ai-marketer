@@ -11,6 +11,14 @@ The short form `npx connect-ai-marketer` is coming with the npm release. Until t
 
 [![connect-ai-marketer](docs/hero.webp)](docs/index.html)
 
+<p align="center">
+  <img src="skill/assets/mascot/greet.gif" width="68" alt="Joseon Bobusang Marketer · Greet">&nbsp;
+  <img src="skill/assets/mascot/scan.gif" width="68" alt="Joseon Bobusang Marketer · Scan">&nbsp;
+  <img src="skill/assets/mascot/draft.gif" width="68" alt="Joseon Bobusang Marketer · Draft">&nbsp;
+  <img src="skill/assets/mascot/done.gif" width="68" alt="Joseon Bobusang Marketer · Done"><br>
+  <sub><b>Joseon Bobusang · Marketer</b> (CONNECT AI HQ PixelCrew) — gently animated pixel portrait that switches expression as it greets, listens, drafts, and queues approvals.</sub>
+</p>
+
 ## First time? In this order
 
 1. **Install Node.js**: get the LTS from [nodejs.org](https://nodejs.org). Open a new terminal (PowerShell on Windows); `node -v` should be v20 or newer (CONNECT AI Browser needs 20; with Ego Lite, 18 is enough).
@@ -123,3 +131,17 @@ MIT with the Commons Clause. Use it, change it, share it, and use it to market y
 
 ## Requirements
 Node 20+ (18+ with Ego Lite), macOS or Windows, CONNECT AI Browser or Ego Lite installed and signed in to the sites you use. Ego Lite is a separate free browser by its own company with its own terms. See NOTICE.md.
+
+<!-- team:start -->
+## CONNECT AI LAB's AI employees
+
+I'm building AI employees one by one, in the open. Grab the one you need first.
+
+<table>
+<tr><td width="34%" valign="top"><b>Business analyst</b><br><a href="https://github.com/wonseokjung/reversebusiness"><code>reversebusiness</code></a></td><td valign="top">Give it a website, and it breaks down how that business makes money.</td></tr>
+<tr><td width="34%" valign="top"><b>Video editor</b><br><a href="https://github.com/wonseokjung/connect-ai-video-motion"><code>connect-ai-video-motion</code></a></td><td valign="top">Give it your video, and it puts motion graphics in the empty space around you.</td></tr>
+<tr><td width="34%" valign="top"><b>Motion designer</b><br><a href="https://github.com/wonseokjung/connect-ai-motion"><code>connect-ai-motion</code></a></td><td valign="top">Give it a few lines of text, and it makes a motion graphics video. No footage needed.</td></tr>
+<tr><td width="34%" valign="top"><b>Marketing team</b> · <b>this one</b><br><a href="https://github.com/wonseokjung/connect-ai-marketer"><code>connect-ai-marketer</code></a></td><td valign="top">Replies, social listening and uploads, 24/7 in your own browser.</td></tr>
+<tr><td width="34%" valign="top"><b>Writer</b><br><a href="https://github.com/wonseokjung/connect-ai-writer"><code>connect-ai-writer</code></a></td><td valign="top">Give it one video, and it writes a post for every platform in your voice, with pictures.</td></tr>
+</table>
+<!-- team:end -->
